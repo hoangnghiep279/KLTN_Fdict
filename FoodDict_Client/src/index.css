@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+  width: 1170px;
+  max-width: calc(100% - 48px);
+  margin: 0 auto;
+}
+.container-field {
+  width: 1300x;
+  max-width: calc(100% - 48px);
+  margin: 0 auto;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.default-input {
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.box-shadow {
+  background: #f5f5f5;
+  box-shadow: 0px 16px 90px 0px rgba(0, 0, 0, 0.1);
+}
+.css_button {
+  color: #fff;
+  /* opacity: 0.8; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff8c42;
+  border-radius: 6px;
+  font-family: "Open Sans", "sans-serif";
+}
+.css_button:hover {
+  background: #fff;
+  color: #ff8c42;
+  border-color: #ff8c42;
+  border: 1px solid #ff8c42;
+}
