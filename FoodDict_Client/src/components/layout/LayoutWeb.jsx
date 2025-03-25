@@ -9,7 +9,7 @@ function LayoutWeb() {
         <Header />
         {/* <Crolltotop /> */}
       </header>
-      <main>
+      <main className="mt-32">
         <Outlet />
       </main>
       <footer>
