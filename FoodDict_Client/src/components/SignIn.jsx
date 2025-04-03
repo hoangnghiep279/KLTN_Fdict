@@ -55,6 +55,7 @@ const SignIn = ({ setIsLogin, onClose }) => {
             className="w-full p-3 bg-[#ff8a4218] placeholder:text-gray-650 border-none outline-none rounded-lg my-2"
             type="email"
             name="email"
+            id="email"
             placeholder="Vui lòng nhập thông tin tài khoản"
             onChange={handleInput}
           />
@@ -63,13 +64,14 @@ const SignIn = ({ setIsLogin, onClose }) => {
           )}
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="text-lg mb-2 block">
+          <label htmlFor="password" className="text-lg mb-2 block">
             ✨ Mật khẩu
           </label>
           <input
             className="w-full p-3 bg-[#ff8a4218] placeholder:text-gray-650 border-none outline-none rounded-lg my-2"
             type="password"
             name="password"
+            id="password"
             placeholder="Nhập mật khẩu"
             onChange={handleInput}
           />

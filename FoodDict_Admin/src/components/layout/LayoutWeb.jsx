@@ -10,7 +10,7 @@ function LayoutWeb() {
         <Header />
         {/* <Crolltotop /> */}
       </header>
-      <main>
+      <main className="pl-80">
         <Outlet />
       </main>
       <footer>{/* <Footer /> */}</footer>

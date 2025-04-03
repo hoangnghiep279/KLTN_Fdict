@@ -12,7 +12,7 @@ function Food({ recipe }) {
     navigate(`/detailRecipe/${recipe.id}`);
   };
   return (
-    <div className="w-[360px] relative">
+    <div className="w-[368px] relative">
       <Link to={`/detailRecipe/${recipe.id}`}>
         <div className="w-full h-[220px] overflow-hidden">
           <img
@@ -41,8 +41,7 @@ function Food({ recipe }) {
         <p className="flex gap-3 items-center mt-3">
           <span className={`${cssDesc}`}>
             <MdPeopleOutline className="text-primaryColor mr-2 text-base" />{" "}
-            {recipe.serving_size}
-            người
+            {recipe.serving_size} người
           </span>
           <span className={`${cssDesc}`}>
             {" "}
@@ -54,7 +53,7 @@ function Food({ recipe }) {
           <span className={`${cssDesc}`}>
             {" "}
             <GiRiceCooker className="text-primaryColor mr-2 text-base" />{" "}
-            {recipe.cooking_time} phút
+            {recipe.cooking_time}
           </span>
         </p>
         <button

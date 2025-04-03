@@ -76,6 +76,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
             className={`${cssInput}`}
             type="text"
             name="name"
+            id="name"
             placeholder="Họ tên của bạn"
           />
           {isSubmitted && error.name && (
@@ -91,6 +92,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
             className={`${cssInput}`}
             type="email"
             name="email"
+            id="email"
             placeholder="Nhập email"
           />
           {isSubmitted && error.email && (
@@ -104,6 +106,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
           <input
             onChange={handleInput}
             className={`${cssInput}`}
+            id="birthday"
             type="text"
             name="birthday"
             placeholder="mm/dd/yyyy"
@@ -138,6 +141,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
           <input
             onChange={handleInput}
             className={`${cssInput}`}
+            id="password"
             type="password"
             name="password"
             placeholder="Nhập mật khẩu"
@@ -155,6 +159,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
           <input
             onChange={handleInput}
             className={`${cssInput}`}
+            id="repass"
             type="password"
             name="confirmPassword"
             placeholder="Nhập lại mật khẩu"

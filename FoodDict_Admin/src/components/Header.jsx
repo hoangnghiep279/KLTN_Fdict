@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { setting } from "../assets/img.js";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
@@ -8,67 +8,42 @@ import { LuUserRoundCog } from "react-icons/lu";
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState(null);
 
-  // Danh sách các mục với link con
   const menuItems = [
     {
       title: "Quản lý công thức món ăn",
       icon: <IoFastFoodOutline className="mr-2 text-2xl" />,
       links: [
-        {
-          name: "Thêm công thức",
-          to: "#",
-          // "/them-cong-thuc"
-        },
-        {
-          name: "Sửa công thức",
-          to: "#",
-          // "/sua-cong-thuc"
-        },
-        {
-          name: "Xóa công thức",
-          to: "#",
-          // "/xoa-cong-thuc"
-        },
+        { name: "Danh sách công thức", to: "/recipes" },
+        { name: "Thêm công thức", to: "/insertRecipe" },
+        { name: "Sửa công thức", to: "/editRecipe" },
+        { name: "Xóa công thức", to: "/deleteRecipe" },
       ],
     },
     {
       title: "Quản lý danh mục",
       icon: <BiCategory className="mr-2 text-2xl" />,
       links: [
-        {
-          name: "Danh mục nguyên liệu",
-          to: "#",
-          // "/danh-muc-nguyen-lieu"
-        },
-        {
-          name: "Danh mục chế biến",
-          to: "#",
-          // "/danh-muc-che-bien"
-        },
-        {
-          name: "Danh mục theo nhu cầu dinh dưỡng",
-          to: "#",
-          // "/danh-muc-dinh-duong",
-        },
-        {
-          name: "Danh mục buổi ăn",
-          to: "#",
-          // "/danh-muc-buoi-an"
-        },
+        { name: "Danh mục nguyên liệu", to: "/ingredients" },
+        { name: "Danh mục chế biến", to: "/cookingMethods" },
+        { name: "Danh mục theo nhu cầu dinh dưỡng", to: "/nutritionNeeds" },
+        { name: "Danh mục buổi ăn", to: "/mealTypes" },
       ],
     },
   ];
 
-  // Xử lý khi click vào một mục
-  const handleClick = (index, firstLink) => {
-    if (openDropdown === index) {
-      setOpenDropdown(null); // Đóng nếu đã mở
-    } else {
-      setOpenDropdown(index); // Mở dropdown
-      navigate(firstLink); // Điều hướng đến link đầu tiên
-    }
+  // Kiểm tra nếu đường dẫn hiện tại thuộc danh mục nào thì mở dropdown đó
+  useEffect(() => {
+    const activeIndex = menuItems.findIndex((item) =>
+      item.links.some((link) => link.to === location.pathname)
+    );
+    setOpenDropdown(activeIndex !== -1 ? activeIndex : null);
+  }, [location.pathname]);
+
+  const handleClick = (index) => {
+    setOpenDropdown(openDropdown === index ? null : index);
   };
 
   return (
@@ -83,7 +58,7 @@ function Header() {
           <li key={index}>
             <span
               className="flex items-center cursor-pointer p-2 hover:bg-[#5932EA] hover:text-white rounded-lg"
-              onClick={() => handleClick(index, item.links[0].to)}
+              onClick={() => handleClick(index)}
             >
               {item.icon}
               {item.title}
@@ -99,7 +74,13 @@ function Header() {
               {item.links.map((link, i) => (
                 <li
                   key={i}
-                  className="flex flex-col gap-3 text-sm hover:bg-[#5932EA] hover:text-white p-2 rounded-lg"
+                  className={`flex flex-col gap-3 text-sm p-2 rounded-lg
+                    ${
+                      location.pathname === link.to
+                        ? "font-bold text-white bg-[#5932EA]"
+                        : "hover:bg-[#5932EA] hover:text-white"
+                    }
+                  `}
                 >
                   <NavLink to={link.to}>{link.name}</NavLink>
                 </li>
@@ -108,7 +89,15 @@ function Header() {
           </li>
         ))}
 
-        <li className="flex items-center px-2 py-2 cursor-pointer hover:bg-[#5932EA] hover:text-white rounded-lg">
+        <li
+          className={`flex items-center px-2 py-2 cursor-pointer rounded-lg 
+            ${
+              location.pathname === "/user-management"
+                ? "font-bold text-white bg-[#5932EA]"
+                : "hover:bg-[#5932EA] hover:text-white"
+            }
+          `}
+        >
           <LuUserRoundCog className="mr-2 text-2xl" />
           Quản lý người dùng
         </li>

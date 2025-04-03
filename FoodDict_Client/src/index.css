@@ -30,6 +30,14 @@
   background: #f5f5f5;
   box-shadow: 0px 16px 90px 0px rgba(0, 0, 0, 0.1);
 }
+.white-shadow {
+  background: #fff;
+  box-shadow: 0px 16px 90px 0px rgba(0, 0, 0, 0.2);
+}
+.white-shadow:hover {
+  background: #fff;
+  box-shadow: 0px 8px 90px 3px rgba(0, 0, 0, 0.4);
+}
 .css_button {
   color: #fff;
   /* opacity: 0.8; */

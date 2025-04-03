@@ -10,12 +10,13 @@ function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
   console.log(recipes);
   useEffect(() => {
     fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit);
   }, [page]);
+  console.log(recipes);
   const handleSearch = () => {
     console.log("faskjdf");
   };
@@ -53,7 +54,7 @@ function Home() {
       </div>
       <section className="mt-40">
         <h2 className="text-4xl font-extrabold text-center">Thực đơn</h2>
-        <div className="mt-10 flex justify-between">
+        <div className="mt-10 flex items-center gap-8 flex-wrap">
           {recipes.length > 0 ? (
             recipes.map((recipe) => <Food key={recipe.id} recipe={recipe} />)
           ) : (
