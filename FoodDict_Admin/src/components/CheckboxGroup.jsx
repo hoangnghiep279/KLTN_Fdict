@@ -1,7 +1,15 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-const CheckboxGroup = ({ apiUrl, title, selectedItems, setSelectedItems }) => {
+const CheckboxGroup = ({
+  apiUrl,
+  title,
+  name = "",
+  selectedItems,
+  setSelectedItems,
+  isSubmitted = false,
+  error = "",
+}) => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -37,6 +45,7 @@ const CheckboxGroup = ({ apiUrl, title, selectedItems, setSelectedItems }) => {
           >
             <input
               type="checkbox"
+              name={name}
               id={item.id}
               checked={
                 Array.isArray(selectedItems) && selectedItems.includes(item.id)
@@ -48,6 +57,9 @@ const CheckboxGroup = ({ apiUrl, title, selectedItems, setSelectedItems }) => {
           </label>
         ))}
       </div>
+      {isSubmitted && error?.[name] && (
+        <p className="text-red-500 mt-2">{error[name]}</p>
+      )}
     </div>
   );
 };

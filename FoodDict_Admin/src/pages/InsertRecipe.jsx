@@ -75,9 +75,6 @@ function InsertRecipe() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    // const payload = {
-    //   ...values,
-    // };
 
     const errors = validateRecipe(values, Object.keys(values));
     setError(errors);
@@ -353,14 +350,22 @@ function InsertRecipe() {
             apiUrl="http://localhost:3000/mealtype"
             title="Chọn loại món ăn"
             selectedItems={mealTypesId}
+            name="mealTypesId"
             setSelectedItems={setMealTypesId}
+            isSubmitted={isSubmitted}
+            error={error}
           />
+
           <CheckboxGroup
             apiUrl="http://localhost:3000/cookmethod"
             title="Chọn loại món ăn"
             selectedItems={cookingMethodsId}
+            name="cookingMethodsId"
             setSelectedItems={setCookingMethodsId}
+            isSubmitted={isSubmitted}
+            error={error}
           />
+
           <CheckboxGroup
             apiUrl="http://localhost:3000/nutrition"
             title="Chọn loại món ăn"
@@ -371,7 +376,10 @@ function InsertRecipe() {
             apiUrl="http://localhost:3000/mealofday"
             title="Chọn loại món ăn"
             selectedItems={mealCateId}
+            name="mealCateId"
             setSelectedItems={setMealCateId}
+            isSubmitted={isSubmitted}
+            error={error}
           />
         </div>
 

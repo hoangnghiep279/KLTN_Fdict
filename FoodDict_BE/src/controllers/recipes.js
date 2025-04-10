@@ -213,24 +213,23 @@ async function insertRecipe(recipe) {
     if (connection) connection.release(); // Giải phóng kết nối
   }
 }
+
 async function getRecipeUpdate(recipeId) {
   let connection;
   try {
     connection = await db.getConnection();
 
-    // Lấy thông tin công thức
+    // 1. Lấy thông tin công thức
     const [recipeResult] = await connection.query(
       `SELECT * FROM recipes WHERE id = ?`,
       [recipeId]
     );
-
     if (recipeResult.length === 0) {
       throw new Error("Không tìm thấy công thức");
     }
-
     const recipe = recipeResult[0];
 
-    // Lấy danh sách nguyên liệu
+    // 2. Lấy nguyên liệu (như trước)
     const [ingredients] = await connection.query(
       `SELECT i.id, i.name, i.category, ri.quantity, ri.unit
        FROM recipe_ingredients ri 
@@ -239,36 +238,80 @@ async function getRecipeUpdate(recipeId) {
       [recipeId]
     );
 
-    // Lấy danh sách loại bữa ăn
-    const [mealTypes] = await connection.query(
+    // 3. Lấy toàn bộ meal types và đánh dấu checked
+    const [allMealTypes] = await connection.query(
+      `SELECT id, name FROM meal_type`
+    );
+    const [linkedMealTypes] = await connection.query(
       `SELECT mealtype_id FROM recipe_meal_types WHERE recipe_id = ?`,
       [recipeId]
     );
+    const linkedTypeIds = new Set(linkedMealTypes.map((m) => m.mealtype_id));
+    const mealTypes = allMealTypes.map((mt) => ({
+      id: mt.id,
+      name: mt.name,
+      checked: linkedTypeIds.has(mt.id),
+    }));
 
-    const [mealCategories] = await connection.query(
+    // 4. Lấy toàn bộ meal categories và đánh dấu checked
+    const [allMealCategories] = await connection.query(
+      `SELECT id, name FROM meal_categories`
+    );
+    const [linkedMealCategories] = await connection.query(
       `SELECT meal_category_id FROM recipe_meal_categories WHERE recipe_id = ?`,
       [recipeId]
     );
+    const linkedCatIds = new Set(
+      linkedMealCategories.map((m) => m.meal_category_id)
+    );
+    const mealCategories = allMealCategories.map((mc) => ({
+      id: mc.id,
+      name: mc.name,
+      checked: linkedCatIds.has(mc.id),
+    }));
 
-    // Lấy danh sách phương pháp nấu ăn
-    const [cookingMethods] = await connection.query(
+    // 5. Lấy toàn bộ cooking methods và đánh dấu checked
+    const [allCookingMethods] = await connection.query(
+      `SELECT id, name FROM cooking_methods`
+    );
+    const [linkedCookingMethods] = await connection.query(
       `SELECT cooking_method_id FROM recipe_cooking_methods WHERE recipe_id = ?`,
       [recipeId]
     );
+    const linkedCookIds = new Set(
+      linkedCookingMethods.map((m) => m.cooking_method_id)
+    );
+    const cookingMethods = allCookingMethods.map((cm) => ({
+      id: cm.id,
+      name: cm.name,
+      checked: linkedCookIds.has(cm.id),
+    }));
 
-    // Lấy danh sách nhu cầu dinh dưỡng
-    const [nutritionNeeds] = await connection.query(
+    // 6. Lấy toàn bộ nutrition needs và đánh dấu checked
+    const [allNutritionNeeds] = await connection.query(
+      `SELECT id, name FROM nutrition_needs`
+    );
+    const [linkedNutritionNeeds] = await connection.query(
       `SELECT nutrition_needs_id FROM recipe_nutrition_needs WHERE recipe_id = ?`,
       [recipeId]
     );
+    const linkedNutIds = new Set(
+      linkedNutritionNeeds.map((n) => n.nutrition_needs_id)
+    );
+    const nutritionNeeds = allNutritionNeeds.map((nn) => ({
+      id: nn.id,
+      name: nn.name,
+      checked: linkedNutIds.has(nn.id),
+    }));
 
+    // 7. Trả về object đầy đủ
     return {
       ...recipe,
       ingredients,
-      mealTypes: mealTypes.map((m) => m.mealtype_id),
-      mealCategories: mealCategories.map((m) => m.meal_category_id),
-      cookingMethods: cookingMethods.map((m) => m.cooking_method_id),
-      nutritionNeeds: nutritionNeeds.map((n) => n.nutrition_needs_id),
+      mealTypes,
+      mealCategories,
+      cookingMethods,
+      nutritionNeeds,
     };
   } catch (error) {
     console.error("Lỗi khi lấy công thức:", error);
@@ -277,21 +320,22 @@ async function getRecipeUpdate(recipeId) {
     if (connection) connection.release();
   }
 }
+
 async function updateRecipe(recipeId, recipe) {
   let connection;
   try {
     connection = await db.getConnection();
     await connection.beginTransaction();
 
-    const [oldRecipe] = await connection.query(
+    const [rows] = await connection.query(
       `SELECT img_url, img_nutrition FROM recipes WHERE id = ?`,
       [recipeId]
     );
 
-    if (!oldRecipe.length) throw new Error("Công thức không tồn tại");
+    if (!rows.length) throw new Error("Công thức không tồn tại");
 
-    const oldImgUrl = oldRecipe[0].img_url;
-    const oldImgNutrition = oldRecipe[0].img_nutrition;
+    const oldImgUrl = rows[0].img_url;
+    const oldImgNutrition = rows[0].img_nutrition;
 
     // Xóa ảnh cũ nếu có ảnh mới
     if (recipe.img_url && oldImgUrl) {
@@ -324,7 +368,7 @@ async function updateRecipe(recipeId, recipe) {
        WHERE id = ?`,
       [
         recipe.name,
-        recipe.img_url || oldImgUrl,
+        recipe.img_url || oldImgUrl, // Nếu không có ảnh mới, dùng ảnh cũ
         recipe.serving_size,
         recipe.cooking_time,
         recipe.difficulty,
@@ -335,17 +379,16 @@ async function updateRecipe(recipeId, recipe) {
         recipe.usagefood,
         recipe.tips,
         recipe.expert_advice,
-        recipe.img_nutrition || oldImgNutrition,
+        recipe.img_nutrition || oldImgNutrition, // Nếu không có ảnh dinh dưỡng mới, dùng ảnh cũ
         recipeId,
       ]
     );
 
-    // Xóa nguyên liệu cũ rồi thêm mới
-    await connection.query(
-      `DELETE FROM recipe_ingredients WHERE recipe_id = ?`,
-      [recipeId]
-    );
-    for (let ing of recipe.ingredients || []) {
+    let ingredients = recipe.ingredients ? JSON.parse(recipe.ingredients) : [];
+
+    // Sau đó, lặp qua các nguyên liệu và xử lý như bình thường
+    for (let ing of ingredients) {
+      // Kiểm tra nguyên liệu đã tồn tại chưa
       let [ingredientResult] = await connection.query(
         "SELECT id FROM ingredients WHERE name = ? AND category = ?",
         [ing.name, ing.category]
@@ -354,30 +397,56 @@ async function updateRecipe(recipeId, recipe) {
       let ingredientId =
         ingredientResult.length > 0 ? ingredientResult[0].id : null;
 
+      // Nếu nguyên liệu chưa có, thêm mới vào bảng ingredients
       if (!ingredientId) {
         await connection.query(
-          "INSERT INTO ingredients (id, name, category) VALUES (UUID(), ?, ?)",
+          "INSERT INTO ingredients (id, name, category) VALUES (uuid(), ?, ?)",
           [ing.name, ing.category]
         );
+
+        // Lấy lại id của nguyên liệu mới thêm vào
         const [newIngResult] = await connection.query(
           "SELECT id FROM ingredients WHERE name = ? AND category = ?",
           [ing.name, ing.category]
         );
         ingredientId = newIngResult[0]?.id;
+      } else {
+        await connection.query(
+          "UPDATE recipe_ingredients SET quantity = ?, unit = ? WHERE recipe_id = ? AND ingredient_id = ?",
+          [ing.quantity, ing.unit, recipeId, ingredientId]
+        );
       }
 
-      await connection.query(
-        "INSERT INTO recipe_ingredients (id, recipe_id, ingredient_id, quantity, unit) VALUES (UUID(), ?, ?, ?, ?)",
-        [recipeId, ingredientId, ing.quantity, ing.unit]
+      // Sau khi có id của nguyên liệu, thêm vào bảng recipe_ingredients (nếu chưa có liên kết)
+      const [existingRecipeIngredient] = await connection.query(
+        "SELECT id FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id = ?",
+        [recipeId, ingredientId]
       );
+
+      if (existingRecipeIngredient.length === 0) {
+        await connection.query(
+          "INSERT INTO recipe_ingredients (id, recipe_id, ingredient_id, quantity, unit) VALUES (uuid(), ?, ?, ?, ?)",
+          [recipeId, ingredientId, ing.quantity, ing.unit]
+        );
+      }
     }
 
+    const mealTypesId = recipe.mealTypesId
+      ? JSON.parse(recipe.mealTypesId)
+      : [];
+    const mealCateId = recipe.mealCateId ? JSON.parse(recipe.mealCateId) : [];
+    const cookingMethodsId = recipe.cookingMethodsId
+      ? JSON.parse(recipe.cookingMethodsId)
+      : [];
+    const nutritionNeedsId = recipe.nutritionNeedsId
+      ? JSON.parse(recipe.nutritionNeedsId)
+      : [];
     // Xóa & thêm lại loại bữa ăn
     await connection.query(
       `DELETE FROM recipe_meal_types WHERE recipe_id = ?`,
       [recipeId]
     );
-    for (let mealType of recipe.mealTypesId || []) {
+    for (let mealType of mealTypesId || []) {
       await connection.query(
         "INSERT INTO recipe_meal_types (id, recipe_id, mealtype_id) VALUES (UUID(), ?, ?)",
         [recipeId, mealType]
@@ -388,7 +457,7 @@ async function updateRecipe(recipeId, recipe) {
       `DELETE FROM recipe_meal_categories WHERE recipe_id = ?`,
       [recipeId]
     );
-    for (let mealType of recipe.mealCateId || []) {
+    for (let mealType of mealCateId || []) {
       await connection.query(
         "INSERT INTO recipe_meal_categories (id, recipe_id, meal_category_id) VALUES (UUID(), ?, ?)",
         [recipeId, mealType]
@@ -400,7 +469,7 @@ async function updateRecipe(recipeId, recipe) {
       `DELETE FROM recipe_cooking_methods WHERE recipe_id = ?`,
       [recipeId]
     );
-    for (let method of recipe.cookingMethodsId || []) {
+    for (let method of cookingMethodsId || []) {
       await connection.query(
         "INSERT INTO recipe_cooking_methods (id, recipe_id, cooking_method_id) VALUES (UUID(), ?, ?)",
         [recipeId, method]
@@ -412,7 +481,7 @@ async function updateRecipe(recipeId, recipe) {
       `DELETE FROM recipe_nutrition_needs WHERE recipe_id = ?`,
       [recipeId]
     );
-    for (let need of recipe.nutritionNeedsId || []) {
+    for (let need of nutritionNeedsId || []) {
       await connection.query(
         "INSERT INTO recipe_nutrition_needs (id, recipe_id, nutrition_needs_id) VALUES (UUID(), ?, ?)",
         [recipeId, need]

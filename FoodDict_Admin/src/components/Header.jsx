@@ -16,10 +16,8 @@ function Header() {
       title: "Quản lý công thức món ăn",
       icon: <IoFastFoodOutline className="mr-2 text-2xl" />,
       links: [
-        { name: "Danh sách công thức", to: "/recipes" },
+        { name: "Danh sách công thức", to: "/" },
         { name: "Thêm công thức", to: "/insertRecipe" },
-        { name: "Sửa công thức", to: "/editRecipe" },
-        { name: "Xóa công thức", to: "/deleteRecipe" },
       ],
     },
     {

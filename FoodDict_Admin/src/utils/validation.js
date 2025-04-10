@@ -152,6 +152,19 @@ function validateRecipe(values, fields = []) {
       errors.expert_advice = "Vui lòng nhập lời khuyên từ chuyên gia";
     }
   }
+  if (fields.includes("mealTypesId") && values.mealTypesId.length === 0) {
+    errors.mealTypesId = "Vui lòng chọn loại món ăn";
+  }
+  if (
+    fields.includes("cookingMethodsId") &&
+    values.cookingMethodsId.length === 0
+  ) {
+    errors.cookingMethodsId = "Vui lòng chọn phương pháp nấu ăn";
+  }
+
+  if (fields.includes("mealCateId") && values.mealCateId.length === 0) {
+    errors.mealCateId = "Vui lòng chọn loại bữa ăn";
+  }
 
   return errors;
 }
