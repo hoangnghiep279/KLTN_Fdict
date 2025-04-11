@@ -255,7 +255,6 @@ export default function UpdateRecipe() {
             isSubmitted={true}
             error={error}
           />
-
           <div>
             <label className="block mb-1">Mô tả:</label>
             <textarea
