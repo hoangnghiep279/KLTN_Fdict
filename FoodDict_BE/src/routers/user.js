@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+// tạo tài khoản
 router.post("/register", async (req, res, next) => {
   try {
     res.json(await controller.register(req.body));
@@ -24,7 +25,7 @@ router.post("/register", async (req, res, next) => {
     next(error);
   }
 });
-
+// đăng nhập tài khoản người dùng
 router.post("/user-login", async (req, res, next) => {
   try {
     const result = await controller.userLogin(req.body);
@@ -33,6 +34,8 @@ router.post("/user-login", async (req, res, next) => {
     next(error);
   }
 });
+
+// đăng nhập tài khoản admin
 router.post("/admin-login", async (req, res, next) => {
   try {
     const result = await controller.adminLogin(req.body);
@@ -42,6 +45,7 @@ router.post("/admin-login", async (req, res, next) => {
   }
 });
 
+// xem thông tin người dùng
 router.get("/profile", checkLogin, async (req, res, next) => {
   try {
     const userId = req.payload.id;
@@ -51,6 +55,8 @@ router.get("/profile", checkLogin, async (req, res, next) => {
     next(error);
   }
 });
+
+// chỉnh sửa thông tin người dùng
 router.put(
   "/profile",
   checkLogin,

@@ -69,7 +69,7 @@ async function getRecipeById(id) {
 
     // Truy vấn thành phần món ăn
     const [ingredients] = await db.query(
-      `SELECT i.id, i.name, i.category, ri.quantity, ri.unit
+      `SELECT i.id, i.name, i.category, i.type, ri.quantity, ri.unit
        FROM recipe_ingredients ri
        JOIN ingredients i ON ri.ingredient_id = i.id
        WHERE ri.recipe_id = ?`,
@@ -145,9 +145,14 @@ async function insertRecipe(recipe) {
 
     // Thêm nguyên liệu
     for (let ing of recipe.ingredients || []) {
+      if (!ing.name || !ing.category || !ing.type) {
+        console.warn("⚠️ Nguyên liệu không hợp lệ:", ing);
+        continue; // bỏ qua nếu thiếu thông tin
+      }
+
       let [ingredientResult] = await connection.query(
-        "SELECT id FROM ingredients WHERE name = ? AND category = ?",
-        [ing.name, ing.category]
+        "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
+        [ing.name, ing.category, ing.type]
       );
 
       let ingredientId =
@@ -155,12 +160,12 @@ async function insertRecipe(recipe) {
 
       if (!ingredientId) {
         const [newIngredient] = await connection.query(
-          "INSERT INTO ingredients (id, name, category) VALUES (UUID(), ?, ?)",
-          [ing.name, ing.category]
+          "INSERT INTO ingredients (id, name, category, type) VALUES (UUID(), ?, ?, ?)",
+          [ing.name, ing.category, ing.type]
         );
         const [newIngResult] = await connection.query(
-          "SELECT id FROM ingredients WHERE name = ? AND category = ?",
-          [ing.name, ing.category]
+          "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
+          [ing.name, ing.category, ing.type]
         );
         ingredientId = newIngResult[0]?.id;
       }
@@ -231,7 +236,7 @@ async function getRecipeUpdate(recipeId) {
 
     // 2. Lấy nguyên liệu (như trước)
     const [ingredients] = await connection.query(
-      `SELECT i.id, i.name, i.category, ri.quantity, ri.unit
+      `SELECT i.id, i.name, i.category,i.type, ri.quantity, ri.unit
        FROM recipe_ingredients ri 
        JOIN ingredients i ON ri.ingredient_id = i.id 
        WHERE ri.recipe_id = ?`,
@@ -390,8 +395,8 @@ async function updateRecipe(recipeId, recipe) {
     for (let ing of ingredients) {
       // Kiểm tra nguyên liệu đã tồn tại chưa
       let [ingredientResult] = await connection.query(
-        "SELECT id FROM ingredients WHERE name = ? AND category = ?",
-        [ing.name, ing.category]
+        "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
+        [ing.name, ing.category, ing.type]
       );
 
       let ingredientId =
@@ -400,14 +405,14 @@ async function updateRecipe(recipeId, recipe) {
       // Nếu nguyên liệu chưa có, thêm mới vào bảng ingredients
       if (!ingredientId) {
         await connection.query(
-          "INSERT INTO ingredients (id, name, category) VALUES (uuid(), ?, ?)",
+          "INSERT INTO ingredients (id, name, category,type) VALUES (uuid(), ?, ?,?)",
           [ing.name, ing.category]
         );
 
         // Lấy lại id của nguyên liệu mới thêm vào
         const [newIngResult] = await connection.query(
-          "SELECT id FROM ingredients WHERE name = ? AND category = ?",
-          [ing.name, ing.category]
+          "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
+          [ing.name, ing.category, ing.type]
         );
         ingredientId = newIngResult[0]?.id;
       } else {

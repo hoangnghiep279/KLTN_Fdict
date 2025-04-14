@@ -47,14 +47,6 @@ export default function UpdateRecipe() {
 
       return updatedRecipe;
     });
-    // setRecipe((prev) => ({
-    //   ...prev,
-    //   [name]: newValue,
-    // }));
-    // setError((prevErrors) => ({
-    //   ...prevErrors,
-    //   [name]: validateRecipe(updatedRecipe, [name])[name],
-    // }));
   };
   // cập nhật checkbox
   const handleCheckbox = (e, groupName) => {
@@ -83,7 +75,7 @@ export default function UpdateRecipe() {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        { name: "", category: "", quantity: "", unit: "" },
+        { name: "", category: "", type: "", quantity: "", unit: "" },
       ],
     }));
   };
@@ -358,12 +350,21 @@ export default function UpdateRecipe() {
                 />
                 <input
                   type="text"
-                  placeholder="Loại"
+                  placeholder="Loại nguyên liệu (VD: lợn)"
                   value={ing.category}
                   onChange={(e) =>
                     handleIngredientChange(idx, "category", e.target.value)
                   }
-                  className="w-32 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
+                  className="w-44 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
+                />
+                <input
+                  type="text"
+                  placeholder="Danh mục (VD: thịt)"
+                  value={ing.type}
+                  onChange={(e) =>
+                    handleIngredientChange(idx, "type", e.target.value)
+                  }
+                  className="w-44 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
                 />
                 <input
                   type="text"

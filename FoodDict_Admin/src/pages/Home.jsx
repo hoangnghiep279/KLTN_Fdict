@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import fetchRecipes from "../api/recipes/getRecipes";
 import deleteRecipe from "../api/recipes/deleteRecipe";
+import Pagination from "../components/Pagination";
 function Home() {
   const id = useParams();
   const [recipes, setRecipes] = useState([]);
@@ -13,7 +14,7 @@ function Home() {
   console.log(recipes);
   useEffect(() => {
     fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit);
-  }, [page]);
+  }, [page, limit]);
   const handleDelete = (id) => {
     deleteRecipe(id, (deletedId) => {
       setRecipes((prev) => prev.filter((recipe) => recipe.id !== deletedId));
@@ -21,18 +22,18 @@ function Home() {
   };
   if (loading) return <Loading />;
   return (
-    <div className="bg-[#F9FAFF] h-screen">
-      <h3>Danh sách công thức</h3>
+    <div className="bg-[#F9FAFF] h-screen p-6">
+      <h3 className="text-3xl font-bold mb-4">Danh sách công thức</h3>
       {recipes.length > 0 ? (
         <div className="overflow-y-auto min-h-[450px]">
           <table className="w-[85%] border-collapse">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 text-left w-2/5">Tên món ăn</th>
-                <th className="px-4 py-3 w-1/5">Ảnh</th>
-                <th className="px-4 py-3 w-1/5">Chi tiết</th>
-                <th className="px-4 py-3 w-1/5">Sửa công thức</th>
-                <th className="px-4 py-3 w-1/5">Xóa công thức</th>
+                <th className="px-4 py-3 text-left w-2/6">Tên món ăn</th>
+                <th className="px-4 py-3 w-1/6">Ảnh</th>
+                <th className="px-4 py-3 w-1/6">Chi tiết</th>
+                <th className="px-4 py-3 w-1/6">Sửa công thức</th>
+                <th className="px-4 py-3 w-1/6">Xóa công thức</th>
               </tr>
             </thead>
             <tbody>
@@ -89,6 +90,22 @@ function Home() {
       ) : (
         <p>Chưa có công thức</p>
       )}
+      {recipes.length > 20 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+          limit={limit}
+          setLimit={setLimit}
+        />
+      )}
+      {/* <Pagination
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+        limit={limit}
+        setLimit={setLimit}
+      /> */}
     </div>
   );
 }

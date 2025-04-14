@@ -105,10 +105,12 @@ function DetailRecipe() {
               <BsDropletFill className="text-[#ff8a42c3]" />
               Nguyên liệu:
             </h3>
+            <p className="ml-10 my-5">M: muỗng canh - m: muỗng cafe</p>
             <ul className="list-disc ml-12 p-5 grid grid-cols-2 gap-3 ">
               {ingredients.map((i) => (
                 <li key={i.id}>
-                  {i.name} {i.quantity} {i.unit}
+                  {i.name} {i.quantity}
+                  {i.unit}
                 </li>
               ))}
             </ul>

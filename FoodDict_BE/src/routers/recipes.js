@@ -61,8 +61,6 @@ router.post(
     { name: "img_nutrition", maxCount: 1 },
   ]),
   async (req, res, next) => {
-    console.log(req.body);
-    console.log(req.files);
     try {
       if (!req.body || Object.keys(req.body).length === 0) {
         return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
@@ -98,11 +96,11 @@ router.put(
       // Kiểm tra ảnh mới, nếu có thì cập nhật đường dẫn
       const img_url = req.files["img_url"]
         ? `resources/img-recipes/${req.files["img_url"][0].filename}`
-        : req.body.img_url; // Nếu không có ảnh mới, dùng ảnh cũ từ body
+        : req.body.img_url;
 
       const img_nutrition = req.files["img_nutrition"]
         ? `resources/img-recipes/${req.files["img_nutrition"][0].filename}`
-        : req.body.img_nutrition; // Nếu không có ảnh mới, dùng ảnh cũ từ body
+        : req.body.img_nutrition;
 
       const updatedRecipe = {
         ...req.body,
@@ -110,7 +108,6 @@ router.put(
         img_nutrition,
       };
 
-      // Gọi controller để cập nhật công thức
       const result = await controller.updateRecipe(recipeId, updatedRecipe);
       res.json(result);
     } catch (error) {

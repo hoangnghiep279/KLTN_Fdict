@@ -38,7 +38,7 @@ function InsertRecipe() {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        { name: "", category: "", quantity: "", unit: "" },
+        { name: "", category: "", type: "", quantity: "", unit: "" },
       ],
     }));
   };
@@ -76,7 +76,14 @@ function InsertRecipe() {
     e.preventDefault();
     setIsSubmitted(true);
 
-    const errors = validateRecipe(values, Object.keys(values));
+    const mergedValues = {
+      ...values,
+      mealTypesId,
+      cookingMethodsId,
+      nutritionNeedsId,
+      mealCateId,
+    };
+    const errors = validateRecipe(mergedValues, Object.keys(mergedValues));
     setError(errors);
 
     if (Object.keys(errors).length > 0) {
@@ -310,12 +317,21 @@ function InsertRecipe() {
                   }
                 />
                 <input
-                  className="w-32 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
+                  className="w-44 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
                   type="text"
-                  placeholder="Loại"
+                  placeholder="Loại nguyên liệu (VD: lợn)"
                   value={ingredient.category}
                   onChange={(e) =>
                     handleIngredientChange(index, "category", e.target.value)
+                  }
+                />
+                <input
+                  className="w-44 p-2 bg-[#d3a48618] text-sm border-none outline-none rounded-lg"
+                  type="text"
+                  placeholder="Danh mục (VD: thịt)"
+                  value={ingredient.type}
+                  onChange={(e) =>
+                    handleIngredientChange(index, "type", e.target.value)
                   }
                 />
                 <input
@@ -346,6 +362,7 @@ function InsertRecipe() {
               ➕ Thêm nguyên liệu
             </button>
           </div>
+
           <CheckboxGroup
             apiUrl="http://localhost:3000/mealtype"
             title="Chọn loại món ăn"
@@ -358,7 +375,7 @@ function InsertRecipe() {
 
           <CheckboxGroup
             apiUrl="http://localhost:3000/cookmethod"
-            title="Chọn loại món ăn"
+            title="Chọn phương pháp nấu ăn"
             selectedItems={cookingMethodsId}
             name="cookingMethodsId"
             setSelectedItems={setCookingMethodsId}
@@ -368,13 +385,17 @@ function InsertRecipe() {
 
           <CheckboxGroup
             apiUrl="http://localhost:3000/nutrition"
-            title="Chọn loại món ăn"
+            title="Chọn nhu cầu dinh dưỡng"
             selectedItems={nutritionNeedsId}
+            name="nutritionNeedsId"
             setSelectedItems={setNutritionNeedsId}
+            isSubmitted={isSubmitted}
+            error={error}
           />
+
           <CheckboxGroup
             apiUrl="http://localhost:3000/mealofday"
-            title="Chọn loại món ăn"
+            title="Chọn loại bữa ăn"
             selectedItems={mealCateId}
             name="mealCateId"
             setSelectedItems={setMealCateId}
