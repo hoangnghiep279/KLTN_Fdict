@@ -73,11 +73,11 @@ function validateRecipe(values, fields = []) {
       errors.img_url = "Vui lòng chọn ảnh";
     }
   }
-  if (fields.includes("img_nutrition")) {
-    if (!values.img_nutrition) {
-      errors.img_nutrition = "Vui lòng chọn ảnh";
-    }
-  }
+  // if (fields.includes("img_nutrition")) {
+  //   if (!values.img_nutrition) {
+  //     errors.img_nutrition = "Vui lòng chọn ảnh";
+  //   }
+  // }
 
   // Validate số (serving_size, cooking_time, calories)
   if (fields.includes("serving_size")) {
@@ -94,13 +94,13 @@ function validateRecipe(values, fields = []) {
     }
   }
 
-  if (fields.includes("calories")) {
-    if (!values.calories.trim()) {
-      errors.calories = "Vui lòng nhập số calo";
-    } else if (!numberRegex.test(values.calories)) {
-      errors.calories = "Calo phải là số nguyên";
-    }
-  }
+  // if (fields.includes("calories")) {
+  //   if (!values.calories.trim()) {
+  //     errors.calories = "Vui lòng nhập số calo";
+  //   } else if (!numberRegex.test(values.calories)) {
+  //     errors.calories = "Calo phải là số nguyên";
+  //   }
+  // }
 
   if (fields.includes("difficulty")) {
     const difficultyValue = Number(values.difficulty);

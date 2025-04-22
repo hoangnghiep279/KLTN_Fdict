@@ -11,6 +11,25 @@ const {
 } = require("../helpers/bcriptPassword.js");
 const uploadSingleImage = require("../helpers/uploadimg").uploadSingleImage;
 
+async function getListUser() {
+  try {
+    const [rows] = await db.query(`SELECT
+      id,
+        \`name\`,
+        \`created_at\`,
+        \`gender\`,
+        \`banned_until\`
+      FROM
+        \`user\` WHERE permission_id = 2`);
+    return {
+      code: 200,
+      rows,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function register(user) {
   try {
     if (!user.name || user.name.trim() === "") {
@@ -103,6 +122,17 @@ async function userLogin(user) {
 
     if (rows.permission_id !== 2) {
       const error = new Error("Bạn không có quyền truy cập!");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    // Kiểm tra nếu đang bị ban
+    if (rows.banned_until && new Date(rows.banned_until) > new Date()) {
+      const error = new Error(
+        `Tài khoản đã bị khóa đến ${new Date(
+          rows.banned_until
+        ).toLocaleString()}.`
+      );
       error.statusCode = 403;
       throw error;
     }
@@ -254,6 +284,67 @@ async function updateUser(userId, user, file) {
   }
 }
 
+async function banUser(userId, user) {
+  if (!userId || !user.days) {
+    return {
+      code: 400,
+      message: "Thiếu userId hoặc số ngày ban.",
+    };
+  }
+
+  try {
+    const [result] = await db.query(
+      `UPDATE \`user\`
+      SET banned_until = DATE_ADD(NOW(), INTERVAL ? DAY)
+      WHERE id = ? AND permission_id = 2`,
+      [user.days, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return {
+        code: 404,
+        message: "Không tìm thấy người dùng hoặc không thể ban admin.",
+      };
+    }
+
+    return {
+      code: 200,
+      message: `Đã ban người dùng ID ${userId} trong ${user.days} ngày.`,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+async function unbanUser(userId) {
+  if (!userId) {
+    return {
+      code: 400,
+      message: "Thiếu userId.",
+    };
+  }
+
+  try {
+    const [result] = await db.query(
+      `UPDATE \`user\` SET banned_until = NULL WHERE id = ? AND permission_id = 2`,
+      [userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return {
+        code: 404,
+        message: "Không tìm thấy người dùng hoặc không thể bỏ ban admin.",
+      };
+    }
+
+    return {
+      code: 200,
+      message: `Đã bỏ ban người dùng ID ${userId}.`,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 // async function changePassword(id, user) {
 //   try {
 //     if (!user.password || user.password.trim() === "") {
@@ -306,46 +397,14 @@ async function updateUser(userId, user, file) {
 //   }
 // }
 
-// async function deleteUser(id) {
-//   try {
-//     await db.execute("START TRANSACTION");
-
-//     await db.execute(
-//       `DELETE FROM \`cart\`
-//        WHERE \`user_id\` = ?`,
-//       [id]
-//     );
-
-//     const [result] = await db.execute(
-//       `DELETE FROM \`user\`
-//        WHERE \`id\` = ?`,
-//       [id]
-//     );
-
-//     if (result.affectedRows === 0) {
-//       const err = new Error("Người dùng không tồn tại!");
-//       err.statusCode = 404;
-//       throw err;
-//     }
-
-//     await db.execute("COMMIT");
-
-//     return {
-//       code: 200,
-//       message: "Đã xoá người dùng thành công!",
-//     };
-//   } catch (error) {
-//     await db.execute("ROLLBACK");
-//     throw error;
-//   }
-// }
-
 module.exports = {
+  getListUser,
   register,
   adminLogin,
   userLogin,
   getUserById,
+  banUser,
+  unbanUser,
   // changePassword,
   updateUser,
-  // deleteUser,
 };

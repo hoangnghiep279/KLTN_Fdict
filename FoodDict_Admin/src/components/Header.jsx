@@ -24,10 +24,10 @@ function Header() {
       title: "Quản lý danh mục",
       icon: <BiCategory className="mr-2 text-2xl" />,
       links: [
-        { name: "Danh mục nguyên liệu", to: "/ingredients" },
+        // { name: "Danh mục nguyên liệu", to: "/ingredients" },
         { name: "Danh mục chế biến", to: "/cookingMethods" },
         { name: "Danh mục theo nhu cầu dinh dưỡng", to: "/nutritionNeeds" },
-        { name: "Danh mục buổi ăn", to: "/mealTypes" },
+        { name: "Danh mục loại món ăn", to: "/mealTypes" },
       ],
     },
   ];
@@ -87,7 +87,8 @@ function Header() {
           </li>
         ))}
 
-        <li
+        <NavLink
+          to={"/user-management"}
           className={`flex items-center px-2 py-2 cursor-pointer rounded-lg 
             ${
               location.pathname === "/user-management"
@@ -98,7 +99,7 @@ function Header() {
         >
           <LuUserRoundCog className="mr-2 text-2xl" />
           Quản lý người dùng
-        </li>
+        </NavLink>
       </ul>
     </div>
   );

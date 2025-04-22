@@ -12,6 +12,28 @@ async function getNutrition() {
   }
 }
 
+// controller.js
+async function getRecipesByNutritionNeed(nutritionNeedId) {
+  try {
+    const [recipes] = await db.query(
+      `
+      SELECT r.*
+      FROM recipes r
+      JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
+      WHERE rn.nutrition_needs_id = ?
+    `,
+      [nutritionNeedId]
+    );
+
+    return {
+      code: 200,
+      data: recipes,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function insertNutrition(nutrition) {
   try {
     const [name] = await db.query(
@@ -77,6 +99,7 @@ async function deleteNutrition(id) {
 }
 module.exports = {
   getNutrition,
+  getRecipesByNutritionNeed,
   insertNutrition,
   updateNutrition,
   deleteNutrition,

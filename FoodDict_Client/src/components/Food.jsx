@@ -46,9 +46,11 @@ function Food({ recipe }) {
           <span className={`${cssDesc}`}>
             {" "}
             <PiChefHatBold className="text-primaryColor mr-2 text-base" />{" "}
-            {recipe.difficulty === 1
+            {!recipe.difficulty || recipe.difficulty === 1
               ? "dễ"
-              : `${recipe.difficulty === 2} ? "Vừa" : "Khó"`}{" "}
+              : recipe.difficulty === 2
+              ? "vừa"
+              : "khó"}
           </span>
           <span className={`${cssDesc}`}>
             {" "}

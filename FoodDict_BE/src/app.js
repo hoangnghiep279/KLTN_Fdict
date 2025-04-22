@@ -6,6 +6,7 @@ const mealtype = require("./routers/mealtype");
 const cookMethod = require("./routers/cookMethod");
 const mealOfDay = require("./routers/mealOfDay");
 const nutrition = require("./routers/nutrition");
+const ingredient = require("./routers/ingredient");
 const app = express();
 const path = require("path");
 app.use(cors());
@@ -25,5 +26,6 @@ app.use("/mealtype", mealtype);
 app.use("/nutrition", nutrition);
 app.use("/mealofday", mealOfDay);
 app.use("/cookmethod", cookMethod);
+app.use("/ingredient", ingredient);
 
 module.exports = app;

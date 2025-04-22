@@ -11,6 +11,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// lọc công thức
+router.get("/recipes", async (req, res, next) => {
+  try {
+    const { nutrition_id } = req.query;
+
+    if (!nutrition_id) {
+      return res.status(400).json({ code: 400, message: "Thiếu nutrition_id" });
+    }
+
+    res.json(await controller.getRecipesByNutritionNeed(nutrition_id));
+  } catch (error) {
+    next(error);
+  }
+});
+
 // thêm
 router.post("/", async (req, res, next) => {
   try {

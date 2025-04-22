@@ -8,6 +8,7 @@ import RecipeDetail from "./pages/RecipeDetail";
 import Nutrition from "./pages/Nutrition";
 import CookMethod from "./pages/CookMethod";
 import MealType from "./pages/Mealtype";
+import ListUser from "./pages/ListUser";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="insertRecipe" element={<InsertRecipe />} />
         <Route path="nutritionNeeds" element={<Nutrition />} />
         <Route path="cookingMethods" element={<CookMethod />} />
+        <Route path="user-management" element={<ListUser />} />
         <Route path="mealTypes" element={<MealType />} />
       </Route>
     </Routes>

@@ -34,6 +34,16 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// lọc công thức
+router.post("/search", async (req, res, next) => {
+  try {
+    const result = await controller.searchRecipes(req.body);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // lấy công thức với id
 router.get("/:id", async (req, res, next) => {
   try {

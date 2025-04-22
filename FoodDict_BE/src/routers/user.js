@@ -17,6 +17,14 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+router.get("/", async (req, res, next) => {
+  try {
+    res.json(await controller.getListUser());
+  } catch (error) {
+    next(error);
+  }
+});
 // tạo tài khoản
 router.post("/register", async (req, res, next) => {
   try {
@@ -39,6 +47,23 @@ router.post("/user-login", async (req, res, next) => {
 router.post("/admin-login", async (req, res, next) => {
   try {
     const result = await controller.adminLogin(req.body);
+    res.status(result.code).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/ban/:id", async (req, res, next) => {
+  try {
+    const result = await controller.banUser(req.params.id, req.body);
+    res.status(result.code).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+router.put("/unban/:id", async (req, res, next) => {
+  try {
+    const result = await controller.unbanUser(req.params.id);
     res.status(result.code).json(result);
   } catch (error) {
     next(error);

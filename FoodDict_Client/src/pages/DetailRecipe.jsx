@@ -157,13 +157,15 @@ function DetailRecipe() {
               {" "}
               <TextWithLineBreaks text={recipes.tips} />
             </div>
-            <div className="w-full h-[29rem] overflow-hidden mt-7">
-              <img
-                src={`http://localhost:3000/${recipes.img_nutrition}`}
-                alt=""
-                className="w-full h-full object-contain"
-              />
-            </div>
+            {recipes.img_nutrition && (
+              <div className="w-full h-[29rem] overflow-hidden mt-7">
+                <img
+                  src={`http://localhost:3000/${recipes.img_nutrition}`}
+                  alt=""
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
           </div>
           <div id="expert_advice" className="py-5">
             <h3 className="flex gap-3 items-center text-2xl font-extrabold">

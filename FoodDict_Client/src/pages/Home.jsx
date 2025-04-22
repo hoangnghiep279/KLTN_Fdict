@@ -6,21 +6,80 @@ import { FaArrowRight } from "react-icons/fa";
 import Food from "../components/Food";
 import Loading from "../components/Loading";
 import fetchRecipes from "../api/recipes/getRecipe";
+import FilterPanel from "../components/FilterPanel";
+import searchRecipes from "../api/recipes/searchRecipes";
+
 function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
-  console.log(recipes);
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [keyword, setKeyword] = useState(""); // từ khóa tìm kiếm
+
+  const [filters, setFilters] = useState({
+    dinh_duong: [],
+    nguyen_lieu: [],
+    cach_nau: [],
+    loai_bua_an: [],
+    danh_muc_mon_an: [],
+  });
+
+  // Fetch recipes when page or filters change
   useEffect(() => {
-    fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit);
-  }, [page]);
-  console.log(recipes);
-  const handleSearch = () => {
-    console.log("faskjdf");
+    const fetchFilteredRecipes = async () => {
+      setLoading(true);
+      try {
+        if (
+          filters.dinh_duong.length ||
+          filters.nguyen_lieu.length ||
+          filters.cach_nau.length ||
+          filters.loai_bua_an.length ||
+          filters.danh_muc_mon_an.length
+        ) {
+          // Nếu có bộ lọc, tìm công thức theo bộ lọc
+          const res = await searchRecipes(filters);
+          setRecipes(res.data);
+        } else {
+          // Nếu không có bộ lọc, lấy tất cả công thức
+          await fetchRecipes(
+            setRecipes,
+            setTotalPages,
+            setLoading,
+            page,
+            limit
+          );
+        }
+      } catch (err) {
+        console.error("Lỗi khi lấy công thức:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredRecipes();
+  }, [filters, page, limit]);
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters);
   };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await searchRecipes({ ...filters, keyword });
+      setRecipes(res.data);
+    } catch (err) {
+      console.error("Lỗi khi tìm kiếm:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) return <Loading />;
+
   return (
     <div className="container">
       <video src={banner} autoPlay loop muted className="rounded-3xl "></video>
@@ -40,9 +99,14 @@ function Home() {
               id="search"
               type="text"
               placeholder="Tìm kiếm"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
               className="ml-2 default-input w-full"
             />
-            <FaFilter className="ml-auto text-xl cursor-pointer" />
+            <FaFilter
+              className="ml-auto text-xl cursor-pointer"
+              onClick={() => setShowFilterPanel(!showFilterPanel)}
+            />
           </div>
           <button
             type="submit"
@@ -53,7 +117,13 @@ function Home() {
         </form>
       </div>
       <section className="mt-40">
+        {showFilterPanel && (
+          <div className="w-3/5 mx-auto mt-5">
+            <FilterPanel onFilterChange={handleFilterChange} />
+          </div>
+        )}
         <h2 className="text-4xl font-extrabold text-center">Thực đơn</h2>
+
         <div className="mt-10 flex items-center gap-8 flex-wrap">
           {recipes.length > 0 ? (
             recipes.map((recipe) => <Food key={recipe.id} recipe={recipe} />)

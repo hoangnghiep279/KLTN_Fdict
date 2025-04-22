@@ -313,27 +313,6 @@ export default function UpdateRecipe() {
               className="bg-[#d3a48618] text-sm border-none outline-none rounded-lg w-4/5"
             />
           </div>
-          <div className="mt-4">
-            <p className="font-medium mb-1">Ảnh dinh dưỡng hiện tại:</p>
-            <div className="flex items-center gap-3">
-              {imgNutrition && (
-                <img
-                  src={imgNutrition}
-                  alt="Ảnh dinh dưỡng"
-                  className="w-20 h-20 object-cover rounded-md mb-2"
-                />
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  setNewNutritionImage(file);
-                  setImgNutrition(URL.createObjectURL(file)); // Xem trước ảnh mới
-                }}
-              />
-            </div>
-          </div>
           {/* ==== Ingredients ==== */}
           <div className="flex flex-col gap-2">
             <p className="mb-2">Nguyên liệu:</p>
@@ -403,6 +382,29 @@ export default function UpdateRecipe() {
               + Thêm nguyên liệu
             </button>
           </div>
+          <div className="ml-auto"></div>
+          <div className="mt-4">
+            <p className="font-medium mb-1">Ảnh dinh dưỡng hiện tại:</p>
+            <div className="flex items-center gap-3">
+              {imgNutrition && (
+                <img
+                  src={imgNutrition}
+                  alt="Ảnh dinh dưỡng"
+                  className="w-20 h-20 object-cover rounded-md mb-2"
+                />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setNewNutritionImage(file);
+                  setImgNutrition(URL.createObjectURL(file)); // Xem trước ảnh mới
+                }}
+              />
+            </div>
+          </div>
+
           {/* ==== Checkbox Section ==== */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Meal Types */}

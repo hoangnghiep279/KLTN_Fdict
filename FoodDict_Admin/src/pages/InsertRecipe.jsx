@@ -298,9 +298,9 @@ function InsertRecipe() {
               onChange={handleInput}
               accept="image/*"
             />
-            {isSubmitted && error.img_nutrition && (
+            {/* {isSubmitted && error.img_nutrition && (
               <p className="text-red-500 mt-2">{error.img_nutrition}</p>
-            )}
+            )} */}
           </div>
 
           <div className="col-span-2">
