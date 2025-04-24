@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 import fetchRecipes from "../api/recipes/getRecipe";
 import FilterPanel from "../components/FilterPanel";
 import searchRecipes from "../api/recipes/searchRecipes";
+import Pagination from "../components/Pagination";
 
 function Home() {
   const [recipes, setRecipes] = useState([]);
@@ -16,33 +17,41 @@ function Home() {
   const [limit, setLimit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
-  const [keyword, setKeyword] = useState(""); // từ khóa tìm kiếm
-
-  const [filters, setFilters] = useState({
+  const [keyword, setKeyword] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState({
     dinh_duong: [],
     nguyen_lieu: [],
     cach_nau: [],
-    loai_bua_an: [],
-    danh_muc_mon_an: [],
+    loai_mon_an: [],
+    danh_muc_mon_an: [], // giữ nguyên đúng key
   });
 
-  // Fetch recipes when page or filters change
+  // Cập nhật filters khi người dùng chọn
+  const handleFilterChange = (updatedFilters) => {
+    setSelectedFilters(updatedFilters);
+  };
+
   useEffect(() => {
     const fetchFilteredRecipes = async () => {
       setLoading(true);
       try {
         if (
-          filters.dinh_duong.length ||
-          filters.nguyen_lieu.length ||
-          filters.cach_nau.length ||
-          filters.loai_bua_an.length ||
-          filters.danh_muc_mon_an.length
+          selectedFilters.dinh_duong.length ||
+          selectedFilters.nguyen_lieu.length ||
+          selectedFilters.cach_nau.length ||
+          selectedFilters.loai_mon_an.length ||
+          selectedFilters.danh_muc_mon_an.length // sửa lại ở đây
         ) {
-          // Nếu có bộ lọc, tìm công thức theo bộ lọc
-          const res = await searchRecipes(filters);
+          const res = await searchRecipes({
+            ...selectedFilters,
+            keyword,
+            page,
+            limit,
+          });
+
           setRecipes(res.data);
+          setTotalPages(res.totalPages);
         } else {
-          // Nếu không có bộ lọc, lấy tất cả công thức
           await fetchRecipes(
             setRecipes,
             setTotalPages,
@@ -59,18 +68,20 @@ function Home() {
     };
 
     fetchFilteredRecipes();
-  }, [filters, page, limit]);
-
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters);
-  };
+  }, [selectedFilters, page, limit]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await searchRecipes({ ...filters, keyword });
+      const res = await searchRecipes({
+        ...selectedFilters,
+        keyword,
+        page,
+        limit,
+      });
       setRecipes(res.data);
+      setTotalPages(res.totalPages);
     } catch (err) {
       console.error("Lỗi khi tìm kiếm:", err);
     } finally {
@@ -119,7 +130,10 @@ function Home() {
       <section className="mt-40">
         {showFilterPanel && (
           <div className="w-3/5 mx-auto mt-5">
-            <FilterPanel onFilterChange={handleFilterChange} />
+            <FilterPanel
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}
+            />
           </div>
         )}
         <h2 className="text-4xl font-extrabold text-center">Thực đơn</h2>
@@ -132,6 +146,14 @@ function Home() {
           )}
         </div>
       </section>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+        limit={limit}
+        setLimit={setLimit}
+      />
     </div>
   );
 }

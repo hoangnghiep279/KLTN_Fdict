@@ -90,22 +90,13 @@ function Home() {
       ) : (
         <p>Chưa có công thức</p>
       )}
-      {recipes.length > 20 && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-          limit={limit}
-          setLimit={setLimit}
-        />
-      )}
-      {/* <Pagination
+      <Pagination
         page={page}
         totalPages={totalPages}
         setPage={setPage}
         limit={limit}
         setLimit={setLimit}
-      /> */}
+      />
     </div>
   );
 }

@@ -6,17 +6,20 @@ async function getIngredientsByType() {
       "SELECT `id`, `name`, `category`, `type` FROM `ingredients`"
     );
 
-    // Nhóm theo `type`
+    // Nhóm theo `type` chỉ khi `category` và `type` không rỗng
     const grouped = {};
     ingredients.forEach((item) => {
-      if (!grouped[item.type]) {
-        grouped[item.type] = [];
+      // Kiểm tra nếu có `category` và `type`
+      if (item.category && item.type) {
+        if (!grouped[item.type]) {
+          grouped[item.type] = [];
+        }
+        grouped[item.type].push({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+        });
       }
-      grouped[item.type].push({
-        id: item.id,
-        name: item.name,
-        category: item.category,
-      });
     });
 
     return {

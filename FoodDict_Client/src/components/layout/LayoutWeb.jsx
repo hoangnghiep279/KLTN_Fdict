@@ -12,7 +12,7 @@ function LayoutWeb() {
       <main className="mt-32">
         <Outlet />
       </main>
-      <footer>
+      <footer className="mt-10">
         <Footer />
       </footer>
     </div>

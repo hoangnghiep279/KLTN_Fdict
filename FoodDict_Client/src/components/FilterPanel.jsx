@@ -25,10 +25,8 @@ const FilterPanel = ({ onFilterChange }) => {
     nguyen_lieu: [],
     cach_nau: [],
     loai_mon_an: [],
-    loai_bua_an: [],
     danh_muc_mon_an: [],
   });
-
   useEffect(() => {
     const fetchAllFilters = async () => {
       try {
@@ -68,7 +66,7 @@ const FilterPanel = ({ onFilterChange }) => {
     { key: "nguyen_lieu", label: "Nguyên liệu" },
     { key: "cach_nau", label: "Cách nấu" },
     { key: "loai_mon_an", label: "Loại món ăn" },
-    { key: "loai_bua_an", label: "Loại bữa ăn" },
+    { key: "danh_muc_mon_an", label: "Buổi ăn" },
     { key: "dinh_duong", label: "Dinh dưỡng" },
   ];
 
@@ -78,23 +76,31 @@ const FilterPanel = ({ onFilterChange }) => {
 
       {/* Tabs tiêu đề */}
       <div className="flex gap-4 border-b mb-4">
-        {sectionTitles.map((section) => (
-          <button
-            key={section.key}
-            onClick={() =>
-              setActiveSection((prev) =>
-                prev === section.key ? null : section.key
-              )
-            }
-            className={`px-4 py-2 font-semibold border-b-2 ${
-              activeSection === section.key
-                ? "border-primaryColor text-primaryColor"
-                : "border-transparent text-gray-600"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
+        {sectionTitles.map((section) => {
+          const count = selectedFilters[section.key]?.length || 0;
+          return (
+            <button
+              key={section.key}
+              onClick={() =>
+                setActiveSection((prev) =>
+                  prev === section.key ? null : section.key
+                )
+              }
+              className={`relative px-4 py-2 font-semibold border-b-2 ${
+                activeSection === section.key
+                  ? "border-primaryColor text-primaryColor"
+                  : "border-transparent text-gray-600"
+              }`}
+            >
+              {section.label}
+              {count > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Nội dung hiển thị tương ứng */}
@@ -158,13 +164,13 @@ const FilterPanel = ({ onFilterChange }) => {
           </div>
         )}
 
-        {activeSection === "loai_bua_an" && (
+        {activeSection === "danh_muc_mon_an" && (
           <div className="grid grid-cols-4 gap-3">
             {mealOfDay.map((item) => (
               <label key={item.id} className="flex gap-2 items-center">
                 <input
                   type="checkbox"
-                  onChange={() => handleChange("loai_bua_an", item.id)}
+                  onChange={() => handleChange("danh_muc_mon_an", item.id)}
                 />
                 <span>{item.name}</span>
               </label>

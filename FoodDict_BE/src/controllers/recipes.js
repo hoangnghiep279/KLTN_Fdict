@@ -43,7 +43,6 @@ async function getRecipe(page = 1, limit = 10) {
     throw error;
   }
 }
-
 async function searchRecipes({
   keyword = "",
   dinh_duong = [],
@@ -51,12 +50,13 @@ async function searchRecipes({
   cach_nau = [],
   loai_bua_an = [],
   danh_muc_mon_an = [],
+  page = 1,
+  limit = 20,
 }) {
   try {
     const conditions = [];
     const values = [];
 
-    // Keyword search (by recipe name)
     if (keyword.trim() !== "") {
       conditions.push(`r.name LIKE ?`);
       values.push(`%${keyword}%`);
@@ -97,8 +97,11 @@ async function searchRecipes({
       values.push(...danh_muc_mon_an);
     }
 
-    const sql = `
-      SELECT DISTINCT r.*
+    const offset = (page - 1) * limit;
+
+    // Truy vấn đếm tổng số kết quả trước
+    const countSql = `
+      SELECT COUNT(DISTINCT r.id) as total
       FROM recipes r
       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
@@ -107,13 +110,102 @@ async function searchRecipes({
       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
       ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
     `;
+    const [countResult] = await db.query(countSql, values);
+    const totalItems = countResult[0].total;
+    const totalPages = Math.ceil(totalItems / limit);
 
-    const [results] = await db.query(sql, values);
-    return { code: 200, data: results };
+    // Truy vấn dữ liệu với phân trang
+    const dataSql = `
+      SELECT DISTINCT r.*
+      FROM recipes r
+      LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
+      LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+      LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
+      LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
+      LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
+      ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
+      LIMIT ? OFFSET ?
+    `;
+
+    const [data] = await db.query(dataSql, [...values, limit, offset]);
+
+    return { code: 200, data, totalPages };
   } catch (error) {
     throw error;
   }
 }
+
+// async function searchRecipes({
+//   keyword = "",
+//   dinh_duong = [],
+//   nguyen_lieu = [],
+//   cach_nau = [],
+//   loai_bua_an = [],
+//   danh_muc_mon_an = [],
+
+// }) {
+//   try {
+//     const conditions = [];
+//     const values = [];
+
+//     // Keyword search (by recipe name)
+//     if (keyword.trim() !== "") {
+//       conditions.push(`r.name LIKE ?`);
+//       values.push(`%${keyword}%`);
+//     }
+
+//     if (dinh_duong.length > 0) {
+//       conditions.push(
+//         `rn.nutrition_needs_id IN (${dinh_duong.map(() => "?").join(",")})`
+//       );
+//       values.push(...dinh_duong);
+//     }
+
+//     if (nguyen_lieu.length > 0) {
+//       conditions.push(
+//         `ri.ingredient_id IN (${nguyen_lieu.map(() => "?").join(",")})`
+//       );
+//       values.push(...nguyen_lieu);
+//     }
+
+//     if (cach_nau.length > 0) {
+//       conditions.push(
+//         `rc.cooking_method_id IN (${cach_nau.map(() => "?").join(",")})`
+//       );
+//       values.push(...cach_nau);
+//     }
+
+//     if (loai_bua_an.length > 0) {
+//       conditions.push(
+//         `mt.mealtype_id IN (${loai_bua_an.map(() => "?").join(",")})`
+//       );
+//       values.push(...loai_bua_an);
+//     }
+
+//     if (danh_muc_mon_an.length > 0) {
+//       conditions.push(
+//         `mc.meal_category_id IN (${danh_muc_mon_an.map(() => "?").join(",")})`
+//       );
+//       values.push(...danh_muc_mon_an);
+//     }
+
+//     const sql = `
+//       SELECT DISTINCT r.*
+//       FROM recipes r
+//       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
+//       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+//       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
+//       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
+//       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
+//       ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
+//     `;
+
+//     const [results] = await db.query(sql, values);
+//     return { code: 200, data: results };
+//   } catch (error) {
+//     throw error;
+//   }
+// }
 
 // async function searchRecipes({
 //   dinh_duong = [],
