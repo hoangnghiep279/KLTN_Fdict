@@ -22,7 +22,7 @@ function Home() {
     dinh_duong: [],
     nguyen_lieu: [],
     cach_nau: [],
-    loai_mon_an: [],
+    loai_bua_an: [],
     danh_muc_mon_an: [], // giữ nguyên đúng key
   });
 
@@ -39,7 +39,7 @@ function Home() {
           selectedFilters.dinh_duong.length ||
           selectedFilters.nguyen_lieu.length ||
           selectedFilters.cach_nau.length ||
-          selectedFilters.loai_mon_an.length ||
+          selectedFilters.loai_bua_an.length ||
           selectedFilters.danh_muc_mon_an.length // sửa lại ở đây
         ) {
           const res = await searchRecipes({
@@ -127,6 +127,7 @@ function Home() {
           </button>
         </form>
       </div>
+ 
       <section className="mt-40">
         {showFilterPanel && (
           <div className="w-3/5 mx-auto mt-5">

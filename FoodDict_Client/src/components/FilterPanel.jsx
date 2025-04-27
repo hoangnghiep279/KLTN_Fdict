@@ -24,7 +24,7 @@ const FilterPanel = ({ onFilterChange }) => {
     dinh_duong: [],
     nguyen_lieu: [],
     cach_nau: [],
-    loai_mon_an: [],
+    loai_bua_an: [],
     danh_muc_mon_an: [],
   });
   useEffect(() => {
@@ -65,7 +65,7 @@ const FilterPanel = ({ onFilterChange }) => {
   const sectionTitles = [
     { key: "nguyen_lieu", label: "Nguyên liệu" },
     { key: "cach_nau", label: "Cách nấu" },
-    { key: "loai_mon_an", label: "Loại món ăn" },
+    { key: "loai_bua_an", label: "Loại món ăn" },
     { key: "danh_muc_mon_an", label: "Buổi ăn" },
     { key: "dinh_duong", label: "Dinh dưỡng" },
   ];
@@ -150,13 +150,13 @@ const FilterPanel = ({ onFilterChange }) => {
           </div>
         )}
 
-        {activeSection === "loai_mon_an" && (
+        {activeSection === "loai_bua_an" && (
           <div className="grid grid-cols-4 gap-3">
             {mealTypes.map((item) => (
               <label key={item.id} className="flex gap-2 items-center">
                 <input
                   type="checkbox"
-                  onChange={() => handleChange("loai_mon_an", item.id)}
+                  onChange={() => handleChange("loai_bua_an", item.id)}
                 />
                 <span>{item.name}</span>
               </label>

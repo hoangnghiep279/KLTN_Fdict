@@ -232,13 +232,14 @@ async function getUserById(userId) {
 
 async function updateUser(userId, user, file) {
   try {
-    // Kiểm tra các trường thông tin người dùng
+    // Kiểm tra thông tin bắt buộc
     if (user.name == null) {
       const error = new Error("Bạn cần nhập tên của bạn!");
       error.statusCode = 401;
       throw error;
     }
 
+    // Kiểm tra xem user có tồn tại chưa
     const [rows] = await db.execute(
       `SELECT \`avatar\` FROM \`user\` WHERE \`id\` = ?`,
       [userId]
@@ -251,10 +252,12 @@ async function updateUser(userId, user, file) {
     const currentAvatar = rows[0].avatar;
     let avatarUrl = currentAvatar;
 
+    // Nếu có file ảnh mới
     if (file) {
       const uploadResult = await uploadSingleImage(file);
       avatarUrl = uploadResult.image;
 
+      // Xóa ảnh cũ nếu không phải avatar mặc định
       if (currentAvatar !== "resources/default-avatar.png") {
         const currentAvatarPath = path.join(__dirname, "../", currentAvatar);
 
@@ -263,16 +266,34 @@ async function updateUser(userId, user, file) {
         }
       }
     }
+
+    // Check trùng email với user khác
+    if (user.email) {
+      const [emailCheck] = await db.execute(
+        `SELECT id FROM user WHERE email = ? AND id != ?`,
+        [user.email, userId]
+      );
+
+      if (emailCheck.length > 0) {
+        const error = new Error("Email đã được sử dụng bởi tài khoản khác!");
+        error.statusCode = 400;
+        throw error;
+      }
+    }
+
+    // Update thông tin người dùng
     await db.execute(
-      `
-      UPDATE \`user\`
-      SET
-        \`name\` = '${user.name}',
-        \`gender\` = ${user.gender ?? null},
-        \`email\` = '${user.email}',
-        \`avatar\` = '${avatarUrl}'
-      WHERE \`id\` = '${userId}'
-      `
+      `UPDATE \`user\`
+       SET \`name\` = ?, \`gender\` = ?, \`email\` = ?, \`avatar\` = ?, \`birthday\` =?
+       WHERE \`id\` = ?`,
+      [
+        user.name,
+        user.gender ?? null,
+        user.email,
+        avatarUrl,
+        user.birthday,
+        userId,
+      ]
     );
 
     return {
@@ -345,57 +366,57 @@ async function unbanUser(userId) {
   }
 }
 
-// async function changePassword(id, user) {
-//   try {
-//     if (!user.password || user.password.trim() === "") {
-//       const error = new Error("Hãy nhập mật khẩu hiện tại của bạn!");
-//       error.statusCode = 400;
-//       throw error;
-//     }
+async function changePassword(id, user) {
+  try {
+    if (!user.password || user.password.trim() === "") {
+      const error = new Error("Hãy nhập mật khẩu hiện tại của bạn!");
+      error.statusCode = 400;
+      throw error;
+    }
 
-//     if (!user.newPassword || user.newPassword.trim() === "") {
-//       const error = new Error("Mật khẩu mới không được để trống!");
-//       error.statusCode = 400;
-//       throw error;
-//     }
+    if (!user.newPassword || user.newPassword.trim() === "") {
+      const error = new Error("Mật khẩu mới không được để trống!");
+      error.statusCode = 400;
+      throw error;
+    }
 
-//     // Truy vấn lấy mật khẩu cũ từ cơ sở dữ liệu
-//     const [[rows]] = await db.execute(
-//       `SELECT \`password\` FROM \`user\` WHERE \`id\` = ?`,
-//       [id]
-//     );
+    // Truy vấn lấy mật khẩu cũ từ cơ sở dữ liệu
+    const [[rows]] = await db.execute(
+      `SELECT \`password\` FROM \`user\` WHERE \`id\` = ?`,
+      [id]
+    );
 
-//     if (!rows) {
-//       const error = new Error("Người dùng không tồn tại!");
-//       error.statusCode = 404;
-//       throw error;
-//     }
+    if (!rows) {
+      const error = new Error("Người dùng không tồn tại!");
+      error.statusCode = 404;
+      throw error;
+    }
 
-//     // So sánh mật khẩu hiện tại
-//     const isPasswordMatch = await comparePassword(user.password, rows.password);
-//     if (!isPasswordMatch) {
-//       const error = new Error("Mật khẩu cũ không chính xác!");
-//       error.statusCode = 401;
-//       throw error;
-//     }
+    // So sánh mật khẩu hiện tại
+    const isPasswordMatch = await comparePassword(user.password, rows.password);
+    if (!isPasswordMatch) {
+      const error = new Error("Mật khẩu cũ không chính xác!");
+      error.statusCode = 401;
+      throw error;
+    }
 
-//     // Băm mật khẩu mới
-//     const hashedPassword = await hashPassword(user.newPassword);
+    // Băm mật khẩu mới
+    const hashedPassword = await hashPassword(user.newPassword);
 
-//     // Cập nhật mật khẩu mới
-//     await db.execute(`UPDATE \`user\` SET \`password\` = ? WHERE \`id\` = ?`, [
-//       hashedPassword,
-//       id,
-//     ]);
+    // Cập nhật mật khẩu mới
+    await db.execute(`UPDATE \`user\` SET \`password\` = ? WHERE \`id\` = ?`, [
+      hashedPassword,
+      id,
+    ]);
 
-//     return {
-//       code: 200,
-//       message: "Mật khẩu đã được thay đổi!",
-//     };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+    return {
+      code: 200,
+      message: "Mật khẩu đã được thay đổi!",
+    };
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   getListUser,
@@ -405,6 +426,6 @@ module.exports = {
   getUserById,
   banUser,
   unbanUser,
-  // changePassword,
+  changePassword,
   updateUser,
 };

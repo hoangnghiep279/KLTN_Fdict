@@ -37,7 +37,6 @@ router.get("/", async (req, res, next) => {
 // lọc công thức
 router.post("/search", async (req, res, next) => {
   try {
-    console.log(req.body);
 
     const result = await controller.searchRecipes(req.body);
     res.json(result);

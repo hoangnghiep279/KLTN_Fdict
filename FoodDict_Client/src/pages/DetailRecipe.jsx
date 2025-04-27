@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  fdecor1,
-  fdecor2,
-  fdecor3,
-  fdecor4,
-  fdecor5,
-  fdecor6,
-} from "../assets/img.js";
+
 import getRecipeById from "../api/recipes/getRecipeById.js";
 import TextWithLineBreaks from "../components/TextWithLineBreaks.jsx";
 import { BsDropletFill } from "react-icons/bs";
@@ -40,12 +33,7 @@ function DetailRecipe() {
   };
   return (
     <>
-      <img src={fdecor1} alt="" className="fixed w-24 h-24 bottom-7 left-7" />
-      <img src={fdecor2} alt="" className="fixed w-14 h-14 bottom-7 right-7" />
-      <img src={fdecor3} alt="" className="fixed w-20 h-20 right-7" />
-      <img src={fdecor4} alt="" className="fixed w-24 h-24 right-0 top-1/2" />
-      <img src={fdecor5} alt="" className="fixed w-20 h-20 top-1/3" />
-      <img src={fdecor6} alt="" className="fixed w-14 h-14 top-1/4 left-20" />
+     
       <div className="container py-12 flex gap-7 ">
         <div className="w-2/3">
           <h1 className="text-3xl font-extrabold capitalize translate-x-1/4">

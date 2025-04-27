@@ -11,6 +11,7 @@ const app = express();
 const path = require("path");
 app.use(cors());
 app.use(express.json());
+app.use("/resources", express.static(path.join(__dirname, "resources")));
 app.use(
   "/resources/user-img",
   express.static(path.join(__dirname, "resources/user-img"))

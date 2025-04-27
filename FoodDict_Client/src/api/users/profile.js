@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const getProfileUser = async (setUser, setIsAuthenticated) => {
+const getProfileUser = async (setUser, setIsAuthenticated, navigate) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -33,6 +33,8 @@ const getProfileUser = async (setUser, setIsAuthenticated) => {
       toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", {
         type: "warning",
       });
+      navigate("/");
+      window.location.reload(); // reload để đảm bảo reset mọi thứ nếu cần
     } else {
       toast("Lỗi máy chủ hoặc không thể kết nối", { type: "error" });
     }

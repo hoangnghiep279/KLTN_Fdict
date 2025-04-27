@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2025 at 05:01 AM
--- Server version: 11.5.2-MariaDB
+-- Generation Time: Apr 27, 2025 at 04:50 AM
+-- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -71,19 +71,22 @@ CREATE TABLE `favorite_recipes` (
 CREATE TABLE `ingredients` (
   `id` char(36) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `category` varchar(100) NOT NULL
+  `category` varchar(100) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `ingredients`
 --
 
-INSERT INTO `ingredients` (`id`, `name`, `category`) VALUES
-('1d7fcb94-106c-11f0-9e95-57807cec2c15', 'ba chỉ', 'lợn'),
-('228eec19-1398-11f0-a16e-5fa317865b35', 'áa', 'sâ'),
-('34801b5f-1398-11f0-a16e-5fa317865b35', 'Thăn', 'lợn'),
-('96933448-106a-11f0-9e95-57807cec2c15', 'fasd', 'ds'),
-('96936565-106a-11f0-9e95-57807cec2c15', 'd', 'd');
+INSERT INTO `ingredients` (`id`, `name`, `category`, `type`) VALUES
+('1d7fcb94-106c-11f0-9e95-57807cec2c15', 'ba chỉ', 'lợn', NULL),
+('228eec19-1398-11f0-a16e-5fa317865b35', 'áa', 'sâ', NULL),
+('34801b5f-1398-11f0-a16e-5fa317865b35', 'Thăn', 'lợn', NULL),
+('6423bf54-21ba-11f0-8cfe-6d7e2f6fa0d7', 'eqw ', '', ''),
+('8a05717a-21b5-11f0-8cfe-6d7e2f6fa0d7', 'fdsa', 'fdas', 'fasd'),
+('96933448-106a-11f0-9e95-57807cec2c15', 'fasd', 'ds', NULL),
+('96936565-106a-11f0-9e95-57807cec2c15', 'd', 'd', NULL);
 
 -- --------------------------------------------------------
 
@@ -125,7 +128,9 @@ INSERT INTO `meal_type` (`id`, `name`) VALUES
 ('030eab9f-0536-11f0-a1d9-60a82de70049', 'các món ăn kèm, món phụ'),
 ('030eac05-0536-11f0-a1d9-60a82de70049', 'ăn chay'),
 ('030eac1b-0536-11f0-a1d9-60a82de70049', 'món nhậu'),
-('030eac2e-0536-11f0-a1d9-60a82de70049', 'món mặn');
+('030eac2e-0536-11f0-a1d9-60a82de70049', 'món mặn'),
+('9dabffaf-21b5-11f0-8cfe-6d7e2f6fa0d7', 'món chính'),
+('a1251ee9-21b5-11f0-8cfe-6d7e2f6fa0d7', 'khác');
 
 -- --------------------------------------------------------
 
@@ -143,6 +148,7 @@ CREATE TABLE `nutrition_needs` (
 --
 
 INSERT INTO `nutrition_needs` (`id`, `name`) VALUES
+('3b775c81-21ba-11f0-8cfe-6d7e2f6fa0d7', 'khác'),
 ('87114d89-0536-11f0-a1d9-60a82de70049', 'cân bằng dinh dưỡng'),
 ('87115057-0536-11f0-a1d9-60a82de70049', 'hỗ trợ cho thận khỏe mạnh'),
 ('871150b8-0536-11f0-a1d9-60a82de70049', 'hỗ trợ cho gan khỏe mạnh'),
@@ -187,10 +193,10 @@ CREATE TABLE `recipes` (
   `description` text DEFAULT NULL,
   `preparation` text DEFAULT NULL,
   `instructions` text DEFAULT NULL,
-  `usagefood` text NOT NULL,
+  `usagefood` text DEFAULT NULL,
   `tips` text DEFAULT NULL,
   `expert_advice` text DEFAULT NULL,
-  `img_nutrition` varchar(255) NOT NULL,
+  `img_nutrition` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -200,6 +206,7 @@ CREATE TABLE `recipes` (
 
 INSERT INTO `recipes` (`id`, `name`, `img_url`, `serving_size`, `cooking_time`, `difficulty`, `calories`, `description`, `preparation`, `instructions`, `usagefood`, `tips`, `expert_advice`, `img_nutrition`, `created_at`) VALUES
 ('1d7f7144-106c-11f0-9e95-57807cec2c15', 'suzyy', 'resources/img-recipes/1744019938167.png', '3', '20 phút', 2, '333', 'dfsfsad', 'dsfafsdasdfa', 'ádffdas', 'fadfsafas', '', 'fdasfadsasdf', 'resources/img-recipes/1744020444148.jpg', '2025-04-03 16:14:47'),
+('8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', 'dsfa', 'resources/img-recipes/1745572403678.jpg', '3', '35 phút', 1, '432', 'fwda', 'fds', 'àd', 'fdas', 'fdas', 'sfad', 'resources/img-recipes/1745572403682.jpg', '2025-04-25 16:13:23'),
 ('96930e87-106a-11f0-9e95-57807cec2c15', 'bé yêu', 'resources/img-recipes/1743671032087.jpg', '2', '30 phút', 1, '222', 'fadsf', 'dfsaf', 'fasdfa', 'sdafasd', 'fdasf', 'adfsfas', 'resources/img-recipes/1743671032093.jpg', '2025-04-03 16:03:52');
 
 -- --------------------------------------------------------
@@ -219,6 +226,8 @@ CREATE TABLE `recipe_cooking_methods` (
 --
 
 INSERT INTO `recipe_cooking_methods` (`id`, `recipe_id`, `cooking_method_id`) VALUES
+('6424d6b8-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '765b2d04-0534-11f0-a1d9-60a82de70049'),
+('64251dd4-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '765b2c22-0534-11f0-a1d9-60a82de70049'),
 ('967d03e7-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '765b2d04-0534-11f0-a1d9-60a82de70049'),
 ('9693a4b3-106a-11f0-9e95-57807cec2c15', '96930e87-106a-11f0-9e95-57807cec2c15', '765b2d04-0534-11f0-a1d9-60a82de70049');
 
@@ -243,6 +252,8 @@ CREATE TABLE `recipe_ingredients` (
 INSERT INTO `recipe_ingredients` (`id`, `recipe_id`, `ingredient_id`, `quantity`, `unit`) VALUES
 ('228f3757-1398-11f0-a16e-5fa317865b35', '1d7f7144-106c-11f0-9e95-57807cec2c15', '228eec19-1398-11f0-a16e-5fa317865b35', '3', 'ed'),
 ('348039eb-1398-11f0-a16e-5fa317865b35', '1d7f7144-106c-11f0-9e95-57807cec2c15', '34801b5f-1398-11f0-a16e-5fa317865b35', '3', 'ok'),
+('6424292c-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '6423bf54-21ba-11f0-8cfe-6d7e2f6fa0d7', '2', 'g'),
+('8a058606-21b5-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '8a05717a-21b5-11f0-8cfe-6d7e2f6fa0d7', '2', 'g'),
 ('96934ab1-106a-11f0-9e95-57807cec2c15', '96930e87-106a-11f0-9e95-57807cec2c15', '96933448-106a-11f0-9e95-57807cec2c15', '3', 'dd'),
 ('96937a60-106a-11f0-9e95-57807cec2c15', '96930e87-106a-11f0-9e95-57807cec2c15', '96936565-106a-11f0-9e95-57807cec2c15', '3424', 'dfsaf');
 
@@ -263,6 +274,7 @@ CREATE TABLE `recipe_meal_categories` (
 --
 
 INSERT INTO `recipe_meal_categories` (`id`, `recipe_id`, `meal_category_id`) VALUES
+('6424868a-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '961dbf55-0535-11f0-a1d9-60a82de70049'),
 ('967cfaff-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '961dbf55-0535-11f0-a1d9-60a82de70049'),
 ('96939b95-106a-11f0-9e95-57807cec2c15', '96930e87-106a-11f0-9e95-57807cec2c15', '961dbf55-0535-11f0-a1d9-60a82de70049');
 
@@ -283,6 +295,7 @@ CREATE TABLE `recipe_meal_types` (
 --
 
 INSERT INTO `recipe_meal_types` (`id`, `recipe_id`, `mealtype_id`) VALUES
+('64243a62-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '030ea8c9-0536-11f0-a1d9-60a82de70049'),
 ('967cf11c-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '030ea8c9-0536-11f0-a1d9-60a82de70049'),
 ('969382f4-106a-11f0-9e95-57807cec2c15', '96930e87-106a-11f0-9e95-57807cec2c15', '030ea8c9-0536-11f0-a1d9-60a82de70049');
 
@@ -303,6 +316,7 @@ CREATE TABLE `recipe_nutrition_needs` (
 --
 
 INSERT INTO `recipe_nutrition_needs` (`id`, `recipe_id`, `nutrition_needs_id`) VALUES
+('64252a95-21ba-11f0-8cfe-6d7e2f6fa0d7', '8a0538c9-21b5-11f0-8cfe-6d7e2f6fa0d7', '871150b8-0536-11f0-a1d9-60a82de70049'),
 ('967d186c-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '87114d89-0536-11f0-a1d9-60a82de70049'),
 ('967d2146-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('967d2a0a-15e4-11f0-a0c3-38fc9861f2be', '1d7f7144-106c-11f0-9e95-57807cec2c15', '871150f5-0536-11f0-a1d9-60a82de70049'),
@@ -332,7 +346,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `permission_id`, `name`, `email`, `password`, `created_at`, `gender`, `birthday`, `banned_until`, `avatar`) VALUES
-('6cea5cdc-0880-11f0-9ee4-57838c346148', 2, 'nghiệp', 'nghiep@gmail.com', '$2b$10$Fjv/9akFhgj0J1ApWpsk5.fbgFfCzaPyj3mOuXmY/4OWRH.Ccy8hG', '2025-03-24 14:19:56', 1, '2001-09-22 00:00:00', NULL, 'resources/default-avatar.png'),
+('6cea5cdc-0880-11f0-9ee4-57838c346148', 2, 'Hoàng Nghiệp dz', 'nghiep@gmail.com', '$2b$10$X8.cY0lahTzHQy7BTJDvj.GKqnXhcSdp9cQnigdux8KQF1PHq45nq', '2025-03-24 14:19:56', 0, '2222-02-02 00:00:00', NULL, 'resources/user-img/0c10b4c7e49f7750bd211d03397e3b0f.jpg'),
 ('c5ac6d06-fafd-11ef-a991-38fc9861f2be', 2, 'nghiep1', 'anhnghiep12@gmail.com', '$2b$10$xJrJ3nn8V8uzI93RIi0RYe5FxT52KCVPcfu33CQODcSfNd6KpsxWO', '2025-03-07 09:41:47', 2, '2001-09-22 00:00:00', NULL, 'resources/user-img/1b91cd5a830809cb30b8194571ad600e.png'),
 ('f42366a7-f96b-11ef-a991-38fc9861f2be', 2, 'hoàngnghiệp', 'anh123@gmail.com', '1', '2025-03-05 09:45:35', 1, '2001-09-22 00:00:00', NULL, NULL);
 
