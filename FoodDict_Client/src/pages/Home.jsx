@@ -9,7 +9,7 @@ import fetchRecipes from "../api/recipes/getRecipe";
 import FilterPanel from "../components/FilterPanel";
 import searchRecipes from "../api/recipes/searchRecipes";
 import Pagination from "../components/Pagination";
-
+import fetchRecipesWithFavoriteStatus from "../api/recipes/getRecipewithFav";
 function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,6 +18,7 @@ function Home() {
   const [totalPages, setTotalPages] = useState(1);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const token = localStorage.getItem("token");
   const [selectedFilters, setSelectedFilters] = useState({
     dinh_duong: [],
     nguyen_lieu: [],
@@ -35,12 +36,14 @@ function Home() {
     const fetchFilteredRecipes = async () => {
       setLoading(true);
       try {
+        const isLoggedIn = !!localStorage.getItem("token");
+
         if (
           selectedFilters.dinh_duong.length ||
           selectedFilters.nguyen_lieu.length ||
           selectedFilters.cach_nau.length ||
           selectedFilters.loai_bua_an.length ||
-          selectedFilters.danh_muc_mon_an.length // sửa lại ở đây
+          selectedFilters.danh_muc_mon_an.length
         ) {
           const res = await searchRecipes({
             ...selectedFilters,
@@ -48,17 +51,27 @@ function Home() {
             page,
             limit,
           });
-
           setRecipes(res.data);
           setTotalPages(res.totalPages);
         } else {
-          await fetchRecipes(
-            setRecipes,
-            setTotalPages,
-            setLoading,
-            page,
-            limit
-          );
+          if (isLoggedIn) {
+            await fetchRecipesWithFavoriteStatus(
+              setRecipes,
+              setTotalPages,
+              setLoading,
+              page,
+              limit,
+              token
+            );
+          } else {
+            await fetchRecipes(
+              setRecipes,
+              setTotalPages,
+              setLoading,
+              page,
+              limit
+            );
+          }
         }
       } catch (err) {
         console.error("Lỗi khi lấy công thức:", err);
@@ -127,7 +140,7 @@ function Home() {
           </button>
         </form>
       </div>
- 
+
       <section className="mt-40">
         {showFilterPanel && (
           <div className="w-3/5 mx-auto mt-5">

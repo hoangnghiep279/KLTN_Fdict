@@ -14,5 +14,16 @@ const fetchCookMethod = async () => {
     throw error;
   }
 };
+async function getRecipesByCookmethod() {
+  try {
+    const res = await axios.get(
+      "http://localhost:3000/cookmethod/by-cookmethod"
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API getRecipesByCookmethod:", error);
+    return { code: 500, data: [] };
+  }
+}
 
-export { fetchCookMethod };
+export { fetchCookMethod, getRecipesByCookmethod };

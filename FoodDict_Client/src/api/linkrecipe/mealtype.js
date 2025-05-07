@@ -15,4 +15,14 @@ const fetchMealType = async () => {
   }
 };
 
-export { fetchMealType };
+async function getRecipesByMealTypes() {
+  try {
+    const res = await axios.get("http://localhost:3000/mealtype/by-mealtypes");
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API getRecipesByMealTypes:", error);
+    return { code: 500, data: [] };
+  }
+}
+
+export { fetchMealType, getRecipesByMealTypes };

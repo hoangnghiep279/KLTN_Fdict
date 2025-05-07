@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import getProfileUser from "../api/users/profile";
-import { useNavigate } from "react-router-dom";
 import updateProfileUser from "../api/users/updateProfile";
-
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import ChangePassword from "../components/ChangePassword";
 function Profile() {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -10,6 +11,7 @@ function Profile() {
   const [editedUser, setEditedUser] = useState({});
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const navigate = useNavigate();
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   useEffect(() => {
     getProfileUser(setUser, setIsAuthenticated, navigate);
@@ -22,7 +24,7 @@ function Profile() {
   }, [isAuthenticated, navigate]);
 
   const handleEdit = () => {
-    setEditedUser(user);
+    setEditedUser(user); // copy dữ liệu gốc vào form
     setIsEditing(true);
   };
 
@@ -46,21 +48,26 @@ function Profile() {
   const handleSave = async () => {
     try {
       const formData = new FormData();
-      formData.append("name", editedUser.name);
-      formData.append("email", editedUser.email);
+      formData.append("name", editedUser.name || "");
+      formData.append("email", editedUser.email || "");
       formData.append("gender", editedUser.gender ?? "");
       formData.append("birthday", editedUser.birthday ?? "");
       if (selectedAvatar) {
         formData.append("avatar", selectedAvatar);
       }
 
-      const updatedUser = await updateProfileUser(formData); // gọi API update (lưu ý update API nhận formData)
+      const updated = await updateProfileUser(formData);
 
-      setUser(updatedUser); // cập nhật lại user mới
+      toast.success(updated.message || "Cập nhật thành công!");
+
+      // Sau khi cập nhật thành công, load lại dữ liệu mới từ API
+      await getProfileUser(setUser, setIsAuthenticated, navigate);
+
       setIsEditing(false);
       setSelectedAvatar(null);
     } catch (error) {
       console.error("Cập nhật thất bại:", error);
+      toast.error(error.response?.data?.message || "Cập nhật thất bại");
     }
   };
 
@@ -70,7 +77,7 @@ function Profile() {
 
   return (
     <div>
-      <div className="box-shadow flex items-center p-5 gap-8 container">
+      <div className="flex items-center gap-8 mb-6 box-shadow container py-7">
         <div className="w-28 h-28 rounded-full overflow-hidden bg-slate-100">
           <img
             src={
@@ -83,111 +90,141 @@ function Profile() {
           />
         </div>
         <div>
-          <p className="text-2xl font-extrabold uppercase mb-3">{user.name}</p>
-          <span className="px-2 py-1 border-primaryColor rounded-xl border">
-            thành viên
-          </span>
+          <p className="text-2xl font-bold">{user.name}</p>
+          <span className="text-gray-500">Thành viên</span>
         </div>
       </div>
+      <div className="my-16"></div>
+      <div className=" container ">
+        <h3 className="text-2xl font-bold uppercase mb-6">Cài đặt tài khoản</h3>
 
-      <div className="p-5">
         {isEditing && (
-          <div className="mb-4">
-            <strong>Đổi ảnh đại diện:</strong>{" "}
+          <div className="mb-4 flex items-center">
+            <span className="text-lg">Ảnh đại diện:</span>{" "}
             <input type="file" accept="image/*" onChange={handleAvatarChange} />
           </div>
         )}
+        <div className="grid grid-cols-2">
+          <div className="mb-4 flex items-center gap-3">
+            <span className="text-lg">Họ tên:</span>{" "}
+            {isEditing ? (
+              <input
+                name="name"
+                value={editedUser.name}
+                onChange={handleChange}
+                className="border p-2 ml-2 rounded"
+              />
+            ) : (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                {user.name}
+              </span>
+            )}
+          </div>
 
-        <div className="mb-4">
-          <strong>Họ tên:</strong>{" "}
-          {isEditing ? (
-            <input
-              name="name"
-              value={editedUser.name}
-              onChange={handleChange}
-              className="border p-1 ml-2"
-            />
-          ) : (
-            user.name
-          )}
-        </div>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="text-lg">Email:</span>{" "}
+            {isEditing ? (
+              <input
+                name="email"
+                value={editedUser.email}
+                onChange={handleChange}
+                className="border p-2 ml-2 rounded"
+              />
+            ) : (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                {user.email}
+              </span>
+            )}
+          </div>
 
-        <div className="mb-4">
-          <strong>Email:</strong>{" "}
-          {isEditing ? (
-            <input
-              name="email"
-              value={editedUser.email}
-              onChange={handleChange}
-              className="border p-1 ml-2"
-            />
-          ) : (
-            user.email
-          )}
-        </div>
-
-        <div className="mb-4">
-          <strong>Giới tính:</strong>{" "}
-          {isEditing ? (
-            <select
-              name="gender"
-              value={editedUser.gender}
-              onChange={handleChange}
-              className="border p-1 ml-2"
-            >
-              <option value="">--Chọn giới tính--</option>
-              <option value="0">Nam</option>
-              <option value="1">Nữ</option>
-            </select>
-          ) : user.gender === 0 ? (
-            "Nam"
-          ) : user.gender === 1 ? (
-            "Nữ"
-          ) : (
-            ""
-          )}
-        </div>
-
-        <div className="mb-4">
-          <strong>Ngày sinh:</strong>{" "}
-          {isEditing ? (
-            <input
-              type="date"
-              name="birthday"
-              value={editedUser.birthday || ""}
-              onChange={handleChange}
-              className="border p-1 ml-2"
-            />
-          ) : (
-            user.birthday
-          )}
-        </div>
-
-        <div className="mt-4">
-          {isEditing ? (
-            <>
-              <button
-                onClick={handleSave}
-                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+          <div className="mb-4 flex items-center gap-3">
+            <span className="text-lg">Giới tính:</span>{" "}
+            {isEditing ? (
+              <select
+                name="gender"
+                value={editedUser.gender ?? ""}
+                onChange={handleChange}
+                className="border p-2 ml-2 rounded"
               >
-                Lưu
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-400 text-white px-4 py-2 rounded"
-              >
-                Hủy
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={handleEdit}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Sửa thông tin
-            </button>
-          )}
+                <option value="">--Chọn giới tính--</option>
+                <option value="0">Nam</option>
+                <option value="1">Nữ</option>
+              </select>
+            ) : user.gender === 0 ? (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                Nam
+              </span>
+            ) : user.gender === 1 ? (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                Nữ
+              </span>
+            ) : (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                Không xác định
+              </span>
+            )}
+          </div>
+
+          <div className="mb-4 flex items-center gap-3">
+            <span className="text-lg">Ngày sinh:</span>{" "}
+            {isEditing ? (
+              <input
+                type="date"
+                name="birthday"
+                value={
+                  editedUser.birthday ? editedUser.birthday.slice(0, 10) : ""
+                }
+                onChange={handleChange}
+                className="border p-2 ml-2 rounded"
+              />
+            ) : user.birthday ? (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                {user.birthday.slice(0, 10)}
+              </span>
+            ) : (
+              <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
+                Chưa cập nhật
+              </span>
+            )}
+          </div>
         </div>
+
+        <div className="flex gap-4 mt-6">
+          <div>
+            {isEditing ? (
+              <>
+                <button
+                  onClick={handleSave}
+                  className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+                >
+                  Lưu
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                >
+                  Hủy
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleEdit}
+                className="bg-primaryColor text-white px-4 py-2 rounded"
+              >
+                Sửa thông tin
+              </button>
+            )}
+          </div>
+          <button
+            onClick={() => setIsChangingPassword(true)}
+            className="bg-primaryColor text-white px-4 py-2 rounded"
+          >
+            Đổi mật khẩu
+          </button>
+        </div>
+        {isChangingPassword && (
+          <ChangePassword setIsChangingPassword={setIsChangingPassword} />
+        )}
       </div>
     </div>
   );

@@ -11,6 +11,51 @@ async function getCookMethod() {
     throw error;
   }
 }
+async function getAllCookMethodWithRecipes() {
+  try {
+    // Lấy tất cả các loại bữa ăn
+    const [cookmethodRecipe] = await db.execute(`SELECT id, name FROM cooking_methods`);
+
+    // Duyệt qua từng loại, lấy danh sách món ăn tương ứng
+    const results = await Promise.all(
+      cookmethodRecipe.map(async (cookMethod) => {
+        const [recipes] = await db.execute(
+          `
+          SELECT 
+            r.id,
+            r.name,
+            r.img_url,
+            r.serving_size,
+            r.cooking_time,
+            r.difficulty,
+            COUNT(f.recipe_id) AS favorite_count
+          FROM recipes r
+          JOIN recipe_cooking_methods rmc ON r.id = rmc.recipe_id
+          LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
+          WHERE rmc.cooking_method_id = ?
+          GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty
+          ORDER BY favorite_count DESC
+        `,
+          [cookMethod.id]
+        );
+
+        return {
+          id: cookMethod.id,
+          name: cookMethod.name,
+          recipes,
+        };
+      })
+    );
+
+    return {
+      code: 200,
+      data: results,
+    };
+  } catch (error) {
+    console.error("Error in getAllCookMethodWithRecipes:", error);
+    throw error;
+  }
+}
 async function insertCookMethod(cookMethod) {
   try {
     const [name] = await db.query(
@@ -77,6 +122,7 @@ async function deleteCookMethod(id) {
 
 module.exports = {
   getCookMethod,
+  getAllCookMethodWithRecipes,
   insertCookMethod,
   updateCookMethod,
   deleteCookMethod,

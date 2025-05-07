@@ -11,6 +11,15 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/by-nutrition", async (req, res, next) => {
+  try {
+    const result = await controller.getAllNutritionWithRecipes();
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // lọc công thức
 router.get("/recipes", async (req, res, next) => {
   try {

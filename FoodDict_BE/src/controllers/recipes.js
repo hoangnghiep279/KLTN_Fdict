@@ -43,6 +43,50 @@ async function getRecipe(page = 1, limit = 10) {
     throw error;
   }
 }
+async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
+  try {
+    const offset = (page - 1) * limit;
+
+    const [rows] = await db.execute(
+      `
+      SELECT 
+        r.id, 
+        r.name, 
+        r.img_url, 
+        r.serving_size, 
+        r.cooking_time, 
+        r.difficulty,
+        COUNT(fr.recipe_id) AS favorite_count,
+        IF(ufr.user_id IS NULL, false, true) AS is_favorite
+      FROM recipes r
+      LEFT JOIN favorite_recipes fr ON r.id = fr.recipe_id
+      LEFT JOIN favorite_recipes ufr ON r.id = ufr.recipe_id AND ufr.user_id = ?
+      GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, ufr.user_id
+      ORDER BY favorite_count DESC
+      LIMIT ? OFFSET ?
+    `,
+      [userId, limit, offset]
+    );
+
+    const [[{ total }]] = await db.execute(`
+      SELECT COUNT(*) AS total FROM recipes
+    `);
+
+    return {
+      code: 200,
+      data: rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalRecipes: total,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 async function searchRecipes({
   keyword = "",
   dinh_duong = [],
@@ -271,6 +315,7 @@ async function searchRecipes({
 //   }
 // }
 
+
 async function getRecipeById(id) {
   try {
     // Kiểm tra id có hợp lệ không
@@ -373,11 +418,14 @@ async function insertRecipe(recipe) {
 
     // Thêm nguyên liệu
     for (let ing of recipe.ingredients || []) {
-      if (!ing.name || !ing.category || !ing.type) {
-        // console.warn("⚠️ Nguyên liệu không hợp lệ:", ing);
-        continue; // bỏ qua nếu thiếu thông tin
+      // if (!ing.name || !ing.category || !ing.type) {
+      //   console.warn("⚠️ Nguyên liệu không hợp lệ:", ing);
+      //   continue; // bỏ qua nếu thiếu thông tin
+      // }
+      if (!ing.name) {
+        continue; // Chỉ bỏ qua nếu thiếu tên
       }
-
+    
       let [ingredientResult] = await connection.query(
         "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
         [ing.name, ing.category, ing.type]
@@ -810,6 +858,7 @@ async function deleteRecipe(recipeId) {
 
 module.exports = {
   getRecipe,
+  getRecipesWithFavoriteStatus,
   searchRecipes,
   getRecipeById,
   getRecipeUpdate,

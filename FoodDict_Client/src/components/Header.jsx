@@ -6,28 +6,31 @@ import { FaFileSignature } from "react-icons/fa";
 import { TbLogin } from "react-icons/tb";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
-
+import getProfileUser from "../api/users/profile";
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
+    // setIsAuthenticated(!!token);
+    if (token) {
+      getProfileUser(setUser, setIsAuthenticated, navigate); // ✅ Gọi API lấy thông tin
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    window.location.reload()
+    window.location.reload();
   };
 
   return (
     <div className="box-shadow flex items-center justify-center fixed top-0 left-0 right-0 h-32">
-      <ul className="flex gap-7 items-center container">
+      <ul className="flex gap-7 items-center justify-around container">
         <li>
           <NavLink
             to={`/`}
@@ -38,19 +41,53 @@ function Header() {
             Thực đơn
           </NavLink>
         </li>
-        <li>
-          <NavLink className={`font-bold text-nowrap`}>
-            Danh mục thực đơn
+        <li className="relative group">
+          <NavLink className="font-bold text-nowrap flex items-center cursor-pointer">
+            Danh mục thực đơn <IoIosArrowDown className="ml-1" />
           </NavLink>
+          <ul className="absolute hidden group-hover:block top-full left-5 bg-white shadow-md rounded-md z-10 min-w-[200px] py-2">
+            <li>
+              <NavLink
+                to="/cookmethod"
+                className="block px-4 py-2 font-semibold hover:bg-gray-100 hover:text-primaryColor"
+              >
+                Cách chế biến
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/mealofday"
+                className="block px-4 py-2 font-semibold hover:bg-gray-100 hover:text-primaryColor"
+              >
+                Bữa trong ngày
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/mealtype"
+                className="block px-4 py-2 font-semibold hover:bg-gray-100 hover:text-primaryColor"
+              >
+                Loại món ăn
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/nutrition"
+                className="block px-4 py-2 font-semibold hover:bg-gray-100 hover:text-primaryColor"
+              >
+                Thực đơn theo dinh dưỡng
+              </NavLink>
+            </li>
+          </ul>
         </li>
-        <li>
+        {/* <li>
           <NavLink className={`font-bold text-nowrap`}>
             Thực đơn theo dinh dưỡng
           </NavLink>
-        </li>
+        </li> */}
         <li>
           <Link
-            to={"#"}
+            to={"/"}
             className="w-24 h-24 rounded-full overflow-hidden block"
           >
             <img src={logo} alt="" className="w-full h-full rounded-full"></img>
@@ -60,7 +97,9 @@ function Header() {
           <NavLink className={`font-bold text-nowrap`}>Kế hoạch nấu ăn</NavLink>
         </li>
         <li>
-          <NavLink className={`font-bold text-nowrap`}>Món yêu thích</NavLink>
+          <NavLink to={"/favorite"} className={`font-bold text-nowrap`}>
+            Món yêu thích
+          </NavLink>
         </li>
         {isAuthenticated ? (
           <li
@@ -70,7 +109,7 @@ function Header() {
           >
             <FaUserCircle className="text-xl" />
             <span className="flex-1 overflow-hidden whitespace-nowrap">
-              Hoàng văn nghiệp
+              {user?.name || "Người dùng"}
             </span>
             <IoIosArrowDown className="text-xl" />
             {isDropdownOpen && (

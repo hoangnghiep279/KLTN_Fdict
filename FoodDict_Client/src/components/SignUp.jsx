@@ -146,7 +146,7 @@ const SignUp = ({ setIsLogin, onClose }) => {
             name="password"
             placeholder="Nhập mật khẩu"
           />
-          <li> Tối thiểu 8 ký tự</li>
+          <li> Tối thiểu 6 ký tự</li>
           <li> Bao gồm chữ thường, chữ in hoa và số</li>
           {isSubmitted && error.password && (
             <p className="text-red-500 mt-2">{error.password}</p>

@@ -15,4 +15,14 @@ const fetchNutrition = async () => {
   }
 };
 
-export { fetchNutrition };
+async function getRecipesByNutrition() {
+  try {
+    const res = await axios.get("http://localhost:3000/nutrition/by-nutrition");
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API getRecipesByNutrition:", error);
+    return { code: 500, data: [] };
+  }
+}
+
+export { fetchNutrition, getRecipesByNutrition };

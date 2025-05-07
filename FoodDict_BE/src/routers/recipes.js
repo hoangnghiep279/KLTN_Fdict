@@ -4,6 +4,7 @@ const controller = require("../controllers/recipes");
 const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
+const { checkLogin } = require("../middleware/checkLogin");
 const uploadDir = path.join(__dirname, "../resources/img-recipes");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -33,6 +34,21 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get("/recipefav",checkLogin, async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const userId = req.payload.id;
+
+
+    const result = await controller.getRecipesWithFavoriteStatus(userId, page, limit);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 // lọc công thức
 router.post("/search", async (req, res, next) => {
@@ -73,6 +89,8 @@ router.post(
   ]),
   async (req, res, next) => {
     try {
+      console.log(req.body);
+      
       if (!req.body || Object.keys(req.body).length === 0) {
         return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
       }

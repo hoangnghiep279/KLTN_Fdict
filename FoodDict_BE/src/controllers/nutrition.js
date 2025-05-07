@@ -12,6 +12,52 @@ async function getNutrition() {
   }
 }
 
+async function getAllNutritionWithRecipes() {
+  try {
+    // Lấy tất cả các loại bữa ăn
+    const [nutritionRecipe] = await db.execute(`SELECT id, name FROM nutrition_needs`);
+
+    // Duyệt qua từng loại, lấy danh sách món ăn tương ứng
+    const results = await Promise.all(
+      nutritionRecipe.map(async (nutrition) => {
+        const [recipes] = await db.execute(
+          `
+          SELECT 
+            r.id,
+            r.name,
+            r.img_url,
+            r.serving_size,
+            r.cooking_time,
+            r.difficulty,
+            COUNT(f.recipe_id) AS favorite_count
+          FROM recipes r
+          JOIN recipe_nutrition_needs rmc ON r.id = rmc.recipe_id
+          LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
+          WHERE rmc.nutrition_needs_id = ?
+          GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty
+          ORDER BY favorite_count DESC
+        `,
+          [nutrition.id]
+        );
+
+        return {
+          id: nutrition.id,
+          name: nutrition.name,
+          recipes,
+        };
+      })
+    );
+
+    return {
+      code: 200,
+      data: results,
+    };
+  } catch (error) {
+    console.error("Error in getAllNutritionWithRecipes:", error);
+    throw error;
+  }
+}
+
 // controller.js
 async function getRecipesByNutritionNeed(nutritionNeedId) {
   try {
@@ -99,6 +145,7 @@ async function deleteNutrition(id) {
 }
 module.exports = {
   getNutrition,
+  getAllNutritionWithRecipes,
   getRecipesByNutritionNeed,
   insertNutrition,
   updateNutrition,

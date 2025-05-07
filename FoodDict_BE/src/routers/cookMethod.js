@@ -9,6 +9,14 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+router.get("/by-cookmethod", async (req, res, next) => {
+  try {
+    const result = await controller.getAllCookMethodWithRecipes();
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
 // thêm
 router.post("/", async (req, res, next) => {
   try {

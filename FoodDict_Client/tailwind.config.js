@@ -10,6 +10,7 @@ export default {
         primaryColor: "#FF8C42", // main background
         secondColor: "#F5F5F5", //background
         thirdColor: "#34495E", //button
+        colorBlur: "#fe8a421b",
       },
     },
   },

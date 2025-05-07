@@ -14,5 +14,14 @@ const fetchMealOfDay = async () => {
     throw error;
   }
 };
+async function getRecipesByMealCate() {
+  try {
+    const res = await axios.get("http://localhost:3000/mealofday/by-mealcate");
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API getRecipesByMealCate:", error);
+    return { code: 500, data: [] };
+  }
+}
 
-export { fetchMealOfDay };
+export { fetchMealOfDay, getRecipesByMealCate };

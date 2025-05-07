@@ -9,6 +9,17 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+// lấy loại món ăn trang client
+router.get("/by-mealtypes", async (req, res, next) => {
+  try {
+    const result = await controller.getAllMealTypesWithRecipes();
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 // thêm
 router.post("/", async (req, res, next) => {
   try {
