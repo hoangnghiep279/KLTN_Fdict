@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2025 at 06:26 AM
+-- Generation Time: May 13, 2025 at 12:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `kltn-fooddict`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` char(36) NOT NULL,
+  `user_id` char(36) NOT NULL,
+  `recipe_id` char(36) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `comment`
+--
+
+INSERT INTO `comment` (`id`, `user_id`, `recipe_id`, `content`, `created_at`) VALUES
+('02a20f58-2cb1-11f0-bee5-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 'ngon', '2025-05-09 15:38:41'),
+('27edc30f-2c7f-11f0-a16d-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', 'ủyytyrt', '2025-05-09 09:41:49'),
+('332bb124-2cb1-11f0-bee5-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 'ngon', '2025-05-09 15:40:02'),
+('698ce0f2-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'f45dfde0-27fe-11f0-b0f6-fc34974bb26c', 'ngon quá đi', '2025-05-13 16:48:24');
 
 -- --------------------------------------------------------
 
@@ -67,7 +91,10 @@ CREATE TABLE `favorite_recipes` (
 --
 
 INSERT INTO `favorite_recipes` (`id`, `user_id`, `recipe_id`) VALUES
-('9fe668b3-28c6-11f0-ac1b-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '34796f6e-27fe-11f0-b0f6-fc34974bb26c');
+('27195bed-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c'),
+('3cdb863e-2d86-11f0-921a-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'f45dfde0-27fe-11f0-b0f6-fc34974bb26c'),
+('65f16526-2bea-11f0-a6f8-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c'),
+('90fe2731-2b1b-11f0-a774-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c');
 
 -- --------------------------------------------------------
 
@@ -169,6 +196,7 @@ INSERT INTO `ingredients` (`id`, `name`, `category`, `type`) VALUES
 ('a0fc3cb2-2997-11f0-aded-fc34974bb26c', 'Bột năng 2.5g 1/2m', '', ''),
 ('a0fc5117-2997-11f0-aded-fc34974bb26c', 'Gia vị: Đường; Tiêu; Tương ớt', '', ''),
 ('a8c8d1e1-28c9-11f0-ac1b-fc34974bb26c', 'Đậu bắp 8 quả', '', ''),
+('b2dfb3c2-2fde-11f0-957d-fc34974bb26c', 'fdas', 'àds3', 'fdas'),
 ('bc7f05c1-2996-11f0-aded-fc34974bb26c', 'Gừng băm 1/2m', '', ''),
 ('bc7f44cd-2996-11f0-aded-fc34974bb26c', 'Hành tím băm 1M', '', ''),
 ('bc7f725a-2996-11f0-aded-fc34974bb26c', 'Tỏi băm 1m', '', ''),
@@ -197,7 +225,6 @@ INSERT INTO `ingredients` (`id`, `name`, `category`, `type`) VALUES
 ('da0c7326-2997-11f0-aded-fc34974bb26c', 'Bắp cải tím 30g', 'rau củ quả khác', ''),
 ('ddfcf55b-28c7-11f0-ac1b-fc34974bb26c', 'Hành tím xay 1M', '', ''),
 ('e7c9b2ae-27fb-11f0-b0f6-fc34974bb26c', 'Đậu hũ', 'đậu', 'khác'),
-('e9c48a8b-28c8-11f0-ac1b-fc34974bb26c', 'anh', 'yeu ', 'em '),
 ('f45ea94a-27fe-11f0-b0f6-fc34974bb26c', 'Trứng gà', 'trứng', 'khác'),
 ('f722ea80-28c7-11f0-ac1b-fc34974bb26c', 'Tỏi xay 1m', '', ''),
 ('f7815565-2995-11f0-aded-fc34974bb26c', 'Củ năng ', '', ''),
@@ -330,8 +357,8 @@ CREATE TABLE `recipes` (
 --
 
 INSERT INTO `recipes` (`id`, `name`, `img_url`, `serving_size`, `cooking_time`, `difficulty`, `calories`, `description`, `preparation`, `instructions`, `usagefood`, `tips`, `expert_advice`, `img_nutrition`, `created_at`) VALUES
-('34796f6e-27fe-11f0-b0f6-fc34974bb26c', 'Tim heo nướng ngũ vị', 'resources/img-recipes/1746263320401.jpg', '4', '15 phút', 1, '149', 'Món tim heo nướng ngũ vị thơm nức vị thịt nướng hòa quyện với ngũ vị hương thơm ngon hấp dẫn. Cách chế biến không những làm nổi bật hương vị tự nhiên mà còn mang trải nghiệm ẩm thực phong phú khi kết hợp các nguyên liệu tim heo, hành tím, tỏi xay, đậu bắp, bắp mỹ, sữa đặc và ngũ vị hương tạo nên món ăn đầy màu sắc.\r\n\r\nTim heo: Giàu dinh dưỡng và có kết cấu mềm mại, khi nướng lên sẽ có vị ngọt tự nhiên và hương thơm hấp dẫn.\r\nHành tím và tỏi xay: Mang lại mùi thơm đặc trưng, làm tăng hương vị của món ăn.\r\nĐậu bắp và bắp mỹ: Thêm vào sự đa dạng về kết cấu, độ giòn và vị ngọt tự nhiên.\r\nNgũ vị hương: Gia vị đặc biệt với sự kết hợp của năm hương liệu chính (hồi, quế, đinh hương, hạt tiêu, và bột thì là) sẽ làm nổi bật hương vị đậm đà và độc đáo cho món ăn.\r\nCùng Món Ngon Mỗi Ngày vào bếp thực hiện ngay nào!\r\n\r\n', 'Tim heo cắt đôi làm sạch, cắt lát.\r\nHành tím xay vắt lấy nước.\r\nTỏi xay vắt lấy nước.\r\nĐậu bắp cắt bỏ đầu.\r\nBắp Mỹ bỏ vỏ, làm sạch.\r\nƯớp tim heo với nước hành tím, tỏi, 1m dầu hào, 1m Aji heo, 1M sữa đặc, 1m ngũ vị hương, 1/3m tiêu, 1/2m bột năng, 1M dầu điều.\r\nĐậu bắp cắt xéo 1/2. Bắp Mỹ cắt khoanh dày 3cm. Ướp cả 2 với ít muối, phết ít dầu lên trên.', 'Cho tất cả vào chảo điện nướng đến khi chín.', 'Cho tất cả ra đĩa, dùng nóng. Chấm chung với muối tiêu chanh hoặc nước tương tùy vị.', 'Ướp tim heo với ít bột năng để tim heo không bị khô sau khi nướng.\r\nDùng sữa đặc có đường để tạo vị ngọt và béo cho món ăn.\r\nDùng màu điều để món ăn có màu đẹp mắt.\r\n', 'Món ăn này là một món ăn làm từ phủ tạng động vật, thường được nghĩ là hoàn toàn không được dùng cho người có tỉ lệ mỡ trong cơ thể cao. Thực tế là có một số loại phủ tạng như tim heo, tim bò, mề gà… có thành phần chất béo thấp và thành phần chất đạm cao, có thể sử dụng một cách khéo léo để làm thay đổi khẩu vị cho người thừa cân, béo phì hoặc thừa mỡ. Chú ý là phải lọc bỏ hết phần mỡ tạng bám chung quanh tim trước khi chế biến.\r\nMón ăn này cần áp dụng cùng với thực đơn đã tính toán kèm theo, và đảm bảo ăn vừa đúng lượng thực phẩm trong thực đơn mới phát huy được tác dụng giảm mỡ thừa.\r\nTập luyện kèm theo ít nhất 45 phút mỗi ngày và phải tập hàng ngày.', NULL, '2025-05-03 16:08:40'),
-('3c5adf20-27fa-11f0-b0f6-fc34974bb26c', 'Canh chua bồn bồn vị thái', 'resources/img-recipes/1746261615631.png', '4', '25 phút', 1, '150', '...', 'Ướp cá: Cho 1m gia vị nêm sẵn Aji-Quick® Lẩu Thái và 1m nước mắm và 3 trái ớt hiểm đập giập vào ướp trong 5 phút. Sau đó, sơ chế các nguyên liệu: cắt cà chua thành múi cau, cắt thơm thành dẻ quạt, cắt ớt sừng thành lát, rau nêm cắt rối, bồn bồn cắt khúc, cọng to cắt đôi.', 'Cho 2M dầu ăn vào nồi, sau đó cho hành tím vào phi thơm. Tiếp theo, cho thơm vào xào một lúc rồi cho tiếp bồn bồn. Sau đó, thêm 1,5 lít nước nóng, lượng gia vị nêm sẵn Aji-Quick® Lẩu Thái còn lại rồi đun sôi. Cho cá hú vào, đun sôi lại và vớt bọt. Nấu thêm 5 phút cho cá chín, thêm cà chua, sau cùng cho ớt sừng và rau nêm vào.', 'Múc canh ra tô. Chấm cùng nước mắm ớt. Ăn kèm cơm trắng hoặc bún tươi.', 'Cá ướp cùng với ớt hiểm, nước mắm và gia vị nêm sẵn Aji-Quick® Lẩu Thái giúp cá thấm vị và khử mùi cho cá.\r\n\r\nNấu canh với gia vị nêm sẵn Aji-Quick® Lẩu Thái để có vị chua cay đặc trưng\r\n\r\nXào bồn bồn cùng với hành tím giúp tăng mùi thơm đặc trưng cho món ăn.', 'Lời Khuyên của chuyên gia dinh dưỡng\r\n– Khẩu phần ăn giảm mỡ thừa là một phần của chương trình can thiệp giúp giảm khối mỡ thừa. Chương trình này bao gồm 4 phần chính là dinh dưỡng, tập luyện vận động, lối sống, và dùng thuốc khi đủ chỉ định. Vì vậy, cần áp dụng đồng loạt cả chương trình mới đạt được hiệu quả giảm mỡ thừa, chứ không chỉ nhờ vào một thực đơn dinh dưỡng.\r\n– Món ăn cần được áp dụng đồng thời với thực đơn đi kèm theo mới đạt được hiệu quả giảm mỡ thừa.\r\n– Cần phải cân thực phẩm của mỗi bữa ăn để đảm bảo lượng calo thu nhập đúng với khẩu phần giảm mỡ thừa. Cùng một món ăn đó, nếu ăn lượng gấp đôi tức là đã nhập vào cơ thể một năng lượng gấp đôi. Tất cả năng lượng thừa đều sẽ chuyển thành mỡ dự trữ trong cơ thể, dù là năng lượng thừa được cung cấp dưới dạng chất đạm, chất bột hay chất béo.\r\n– Khẩu phần giảm mỡ thừa chỉ giảm năng lượng, chứ không giảm nước. Vì vậy, vẫn phải đảm bảo lượng nước tối thiểu 40ml/kg/ngày.', 'resources/img-recipes/1746261615634.png', '2025-05-03 15:40:15'),
+('34796f6e-27fe-11f0-b0f6-fc34974bb26c', 'Tim heo nướng ngũ vị', 'resources/img-recipes/1746263320401.jpg', '3', '20 phút', 1, '149', 'Món tim heo nướng ngũ vị thơm nức vị thịt nướng hòa quyện với ngũ vị hương thơm ngon hấp dẫn. Cách chế biến không những làm nổi bật hương vị tự nhiên mà còn mang trải nghiệm ẩm thực phong phú khi kết hợp các nguyên liệu tim heo, hành tím, tỏi xay, đậu bắp, bắp mỹ, sữa đặc và ngũ vị hương tạo nên món ăn đầy màu sắc.\r\n\r\nTim heo: Giàu dinh dưỡng và có kết cấu mềm mại, khi nướng lên sẽ có vị ngọt tự nhiên và hương thơm hấp dẫn.\r\nHành tím và tỏi xay: Mang lại mùi thơm đặc trưng, làm tăng hương vị của món ăn.\r\nĐậu bắp và bắp mỹ: Thêm vào sự đa dạng về kết cấu, độ giòn và vị ngọt tự nhiên.\r\nNgũ vị hương: Gia vị đặc biệt với sự kết hợp của năm hương liệu chính (hồi, quế, đinh hương, hạt tiêu, và bột thì là) sẽ làm nổi bật hương vị đậm đà và độc đáo cho món ăn.\r\nCùng Món Ngon Mỗi Ngày vào bếp thực hiện ngay nào!\r\n\r\n', 'Tim heo cắt đôi làm sạch, cắt lát.\r\nHành tím xay vắt lấy nước.\r\nTỏi xay vắt lấy nước.\r\nĐậu bắp cắt bỏ đầu.\r\nBắp Mỹ bỏ vỏ, làm sạch.\r\nƯớp tim heo với nước hành tím, tỏi, 1m dầu hào, 1m Aji heo, 1M sữa đặc, 1m ngũ vị hương, 1/3m tiêu, 1/2m bột năng, 1M dầu điều.\r\nĐậu bắp cắt xéo 1/2. Bắp Mỹ cắt khoanh dày 3cm. Ướp cả 2 với ít muối, phết ít dầu lên trên.', 'Cho tất cả vào chảo điện nướng đến khi chín.', 'Cho tất cả ra đĩa, dùng nóng. Chấm chung với muối tiêu chanh hoặc nước tương tùy vị.', 'Ướp tim heo với ít bột năng để tim heo không bị khô sau khi nướng.\r\nDùng sữa đặc có đường để tạo vị ngọt và béo cho món ăn.\r\nDùng màu điều để món ăn có màu đẹp mắt.\r\n', 'Món ăn này là một món ăn làm từ phủ tạng động vật, thường được nghĩ là hoàn toàn không được dùng cho người có tỉ lệ mỡ trong cơ thể cao. Thực tế là có một số loại phủ tạng như tim heo, tim bò, mề gà… có thành phần chất béo thấp và thành phần chất đạm cao, có thể sử dụng một cách khéo léo để làm thay đổi khẩu vị cho người thừa cân, béo phì hoặc thừa mỡ. Chú ý là phải lọc bỏ hết phần mỡ tạng bám chung quanh tim trước khi chế biến.\r\nMón ăn này cần áp dụng cùng với thực đơn đã tính toán kèm theo, và đảm bảo ăn vừa đúng lượng thực phẩm trong thực đơn mới phát huy được tác dụng giảm mỡ thừa.\r\nTập luyện kèm theo ít nhất 45 phút mỗi ngày và phải tập hàng ngày.', NULL, '2025-05-03 16:08:40'),
+('3c5adf20-27fa-11f0-b0f6-fc34974bb26c', 'Canh chua bồn bồn vị thái', 'resources/img-recipes/1746261615631.png', '3', '25 phút', 2, '1500', '...hehe', 'Ướp cá: Cho 1m gia vị nêm sẵn Aji-Quick® Lẩu Thái và 1m nước mắm và 3 trái ớt hiểm đập giập vào ướp trong 5 phút. Sau đó, sơ chế các nguyên liệu: cắt cà chua thành múi cau, cắt thơm thành dẻ quạt, cắt ớt sừng thành lát, rau nêm cắt rối, bồn bồn cắt khúc, cọng to cắt đôi.', 'Cho 2M dầu ăn vào nồi, sau đó cho hành tím vào phi thơm. Tiếp theo, cho thơm vào xào một lúc rồi cho tiếp bồn bồn. Sau đó, thêm 1,5 lít nước nóng, lượng gia vị nêm sẵn Aji-Quick® Lẩu Thái còn lại rồi đun sôi. Cho cá hú vào, đun sôi lại và vớt bọt. Nấu thêm 5 phút cho cá chín, thêm cà chua, sau cùng cho ớt sừng và rau nêm vào.', 'Múc canh ra tô. Chấm cùng nước mắm ớt. Ăn kèm cơm trắng hoặc bún tươi.', 'Cá ướp cùng với ớt hiểm, nước mắm và gia vị nêm sẵn Aji-Quick® Lẩu Thái giúp cá thấm vị và khử mùi cho cá.\r\n\r\nNấu canh với gia vị nêm sẵn Aji-Quick® Lẩu Thái để có vị chua cay đặc trưng\r\n\r\nXào bồn bồn cùng với hành tím giúp tăng mùi thơm đặc trưng cho món ăn.', 'Lời Khuyên của chuyên gia dinh dưỡng\r\n– Khẩu phần ăn giảm mỡ thừa là một phần của chương trình can thiệp giúp giảm khối mỡ thừa. Chương trình này bao gồm 4 phần chính là dinh dưỡng, tập luyện vận động, lối sống, và dùng thuốc khi đủ chỉ định. Vì vậy, cần áp dụng đồng loạt cả chương trình mới đạt được hiệu quả giảm mỡ thừa, chứ không chỉ nhờ vào một thực đơn dinh dưỡng.\r\n– Món ăn cần được áp dụng đồng thời với thực đơn đi kèm theo mới đạt được hiệu quả giảm mỡ thừa.\r\n– Cần phải cân thực phẩm của mỗi bữa ăn để đảm bảo lượng calo thu nhập đúng với khẩu phần giảm mỡ thừa. Cùng một món ăn đó, nếu ăn lượng gấp đôi tức là đã nhập vào cơ thể một năng lượng gấp đôi. Tất cả năng lượng thừa đều sẽ chuyển thành mỡ dự trữ trong cơ thể, dù là năng lượng thừa được cung cấp dưới dạng chất đạm, chất bột hay chất béo.\r\n– Khẩu phần giảm mỡ thừa chỉ giảm năng lượng, chứ không giảm nước. Vì vậy, vẫn phải đảm bảo lượng nước tối thiểu 40ml/kg/ngày.', 'resources/img-recipes/1746261615634.png', '2025-05-03 15:40:15'),
 ('56125b0c-27fc-11f0-b0f6-fc34974bb26c', 'Miến trộn hải sản', 'resources/img-recipes/1746262517760.png', '4', '15 phút', 2, '300', 'Miến trộn hải sản kết hợp giữa hương vị tươi ngon của hải sản và sự mềm dai của miến. Món ăn này không chỉ ngon mà còn mang lại cảm giác tươi mới nhờ sự kết hợp hài hòa giữa các nguyên liệu.\r\n\r\nSợi miến mềm hòa quyện cùng tôm mực giòn ngọt, thấm đẫm vị chua ngọt thanh nhẹ, điểm thêm chút cay cay của ớt sừng, bùi bùi của đậu phộng và hương thơm từ hành phi, tất cả tạo nên hương vị ngon khó cưỡng đến sợi cuối cùng. Món trộn đơn giản mà cực kỳ hấp dẫn với công thức từ đầu bếp chuyên nghiệp. Đợi gì nữa? Vào bếp cùng Món Ngon Mỗi Ngày để làm ngay món ăn này nhé!', 'Hành tây tím cắt mỏng, ngâm nước đá để giảm hăng. Ớt sừng cắt sợi. Ngò gai 3, lá quế 5 cắt nhỏ. Cà rốt, Cần Tàu cắt sợi nhuyễn.\r\nTôm bóc vỏ, bỏ đầu, chừa đuôi, bỏ chỉ lưng. Mực làm sạch, khứa vảy rồng. Tôm, mực ướp 1m Bột ngọt AJI-NO-MOTO®, 1m Hạt nêm Aji-ngon® Heo, 1/2M giấm, 1/2M tương ớt, để thấm', 'Áp chảo tôm, mực với ít dầu, trút ra để riêng. Tiếp tục xào cần tây, cà rốt, ớt sừng\r\nPha nước trộn: Cho vào máy xay nhuyễn hỗn hợp gồm: 1M nước cốt chanh, 3M nước mắm, 2.5M Giấm gạo lên men Ajinomoto, 2M đường, thêm 1M tỏi, 3 cọng ngò gai, 6 lá quế, 1M tương ớt vào xay nhuyễn mịn.\r\nĐun sôi nước sau đó cho miến vào trụng mềm thì vớt ra ngâm vào chậu nước đá lạnh. Vớt ra để cho ráo nước, trộn đều với 1M dầu tỏi phi', 'Trộn đều xốt cùng miến, các loại rau củ, tôm, mực, rắc 1M đậu phộng rang giã, hành phi, ngò rí và thưởng thức.', '🧑‍🍳 Lá quế và ngò gai thêm vào xốt trộn giúp cho xốt có mùi thơm đặc trưng hơn\r\n\r\n🧑‍🍳 Miến sau khi chần xong nên ngâm vào nước đá để sợi miến tơi, không bết dính\r\n\r\n🧑‍🍳 Dùng giấm gạo lên men Ajinomoto giúp khử tanh và tăng hương vị cho hải sản', 'Món ăn này dành cho những người đang áp dụng chế độ ăn và tập luyện để giảm khối mỡ thừa, bao gồm cả những người có tình trạng gan nhiễm mỡ mức độ nhẹ đến trung bình.\r\nMón ăn cần được áp dụng cùng với thực đơn đi kèm mới đạt mức năng lượng thấp đủ để giảm mỡ thừa của cơ thể\r\nKhẩu phần chất bột trong món ăn là chất bột tinh, ít chất xơ, nên tốt cho việc cung cấp năng lượng sạch để bảo vệ tế bào gan và thần kinh, nhưng sẽ không phù hợp với những người có bệnh lý rối loạn đường huyết đói hoặc người bệnh đái tháo đường.\r\nMón ăn đi kèm nên giàu chất xơ để cân đối khẩu phần năng lượng và các chất không sinh năng lượng.', NULL, '2025-05-03 15:55:17'),
 ('5a52f386-27ff-11f0-b0f6-fc34974bb26c', 'Gà hấp tứ quý chay', 'resources/img-recipes/1746263813398.jpg', '4', '20 phút', 1, '360', 'Gà hấp tứ quý chay vị đậm đà, vừa ăn, thơm nấm và nước tương. Món ăn lại rất hấp dẫn với màu vàng của da gà chay bóng bẩy kết hợp với màu của các loại nấm, cà rốt, tàu hũ ky,…. Cùng vào bếp với Món Ngon Mỗi Ngày để thực hiện ngay món chay mới hấp dẫn này thôi nào!', 'Tẩm nấm đùi gà qua bột năng, xếp vào lá tàu hủ ky thành hình chữ nhật.\r\nGói nấm lại, gói kín và dán mép bằng bột năng, làm đến khi hết nấm và lá tàu hủ ky (2-3 gói).\r\nÁp chảo những gói nấm đến khi vàng giòn 2 mặt, để nguội.\r\nCắt ngang gói nấm thành từng miếng dày 1-1.5cm (nhìn như miếng thịt gà).\r\n🥣Pha xốt: 1/3m tiêu đen, 1/2m bột ngọt, 2m Hạt nêm Aji-ngon® Nấm, 2m đường, 1m dầu mè, 1M Nước tương “Phú Sĩ”, 1M nước lọc, khuấy tan gia vị', 'Phi thơm hành boa rô, cho các loại rau củ (trừ hành tây) vào xào chung với xốt.\r\nXếp hành tây dưới đĩa oval, xếp miếng gà lên trên, cho các loại rau củ vừa xào xung quanh.\r\nCho đĩa gà vào nồi hấp và hấp 20 phút', 'Lấy đĩa gà ra và trang trí ngò rí, dùng kèm cơm nóng.', '✅ Tẩm bột năng vào nấm để nấm dính chặt hơn.\r\n\r\n✅ Áp chảo tàu hủ ky để có miếng da gà đẹp mắt.\r\n\r\n✅ Xào xốt với nguyên liệu phụ trước để hương vị hài hòa', 'Thực đơn này áp dụng cho người thừa cân – béo phì hoặc có bệnh lý rối loạn chuyển hóa lipid như tăng cholesterol, tăng triglycerid hoặc gan nhiễm mỡ, bệnh lý mạch vành…\r\nMón ăn được áp dụng trong thực đơn đính kèm mới đạt được hiệu quả giảm mỡ mong muốn và duy trì sức khỏe. Lưu ý là ăn đủ các bữa trong ngày với số lượng thực phẩm được tính toán kèm trong thực đơn thì sẽ đạt hiệu quả giảm mỡ thừa tốt hơn việc ăn một bữa nhiều rồi nhịn các bữa còn lại.\r\nNgoài việc tập luyện một môn thể thao hàng ngày, cần phải gia tăng hoạt động bằng cách tăng năng động: làm vườn, tưới cây, làm việc nhà, tập khiêu vũ…', NULL, '2025-05-03 16:16:53'),
 ('629888f3-27fb-11f0-b0f6-fc34974bb26c', 'Canh bóng nấu thả', 'resources/img-recipes/1746262109289.jpg', '4', '25 phút', 2, '120', 'Công thức nấu món Canh bóng nấu thả món ăn truyền thống của ẩm thực Việt nam vào những ngày lễ tết. Món canh không chỉ thanh mát, tinh tế mà còn thể hiện sự cầu kỳ trong cách chế biến, kết hợp nhiều nguyên liệu tạo nên hương vị hài hòa và hấp dẫn.\r\n\r\nBóng bì mềm dai, thấm vị: Bóng bì được sơ chế cẩn thận để có độ mềm dai vừa phải, khi thả vào canh sẽ hút nước dùng, tạo cảm giác béo nhẹ nhưng không ngán.\r\nRau củ tươi giòn, đẹp mắt: Cà rốt, bông cải trắng, xanh được tỉa hoa hoặc cắt lát tinh tế, giúp món canh thêm phần bắt mắt và tăng độ giòn ngọt tự nhiên.\r\nGiò sống dai mềm: làm cho món canh thêm phần phong phú.\r\nNấm hương dậy mùi thơm: Nấm hương không chỉ giúp tăng thêm độ ngọt mà còn tạo mùi thơm đặc trưng cho món ăn.\r\nCùng Món Ngon Mỗi Ngày vào bếp thực hiện ngay món ăn truyền thống này thôi nào!', 'Bóng bì ngâm mềm, rửa sạch với rượu và gừng.\r\nCà rốt tỉa hoa, cắt lát. Băm nhỏ 1m cà rốt. Bông cải trắng, xanh cắt miếng vừa ăn. Nấm hương cắt đôi (nếu to). Hành lá chần khoảng 6 cọng, cọng ngò rí băm nhỏ, phần còn lại cắt khúc.\r\nGiò sống trộn đều với 1M tiêu xanh đập dập, 1m ngò rí băm và 1m cà rốt băm.', 'Trải miếng bóng bì ra, phết hỗn hợp giò sống lên trên, cuộn chặt tay, sau đó dùng hành lá buộc lại. Nấu trong nước dùng khoảng 5 phút, vớt ra để nguội, cắt lát vừa ăn.\r\nNấu sôi nước dùng gà, cho các loại rau củ và nấu chín, nêm 1m hạt nêm, 1m muối, 1m bột ngọt AJI-NO-MOTO®, 1m đường, cho phàn bóng bì vào nấu sôi lại, nêm 1/2M nước mắm, hành ngò, tiêu, tắt lửa.', 'Múc canh ra tô, dùng nóng.', '🧑‍🍳 Cuộn bóng bì chặt tay, buộc bằng các khoanh hành để dễ định hình.\r\n🧑‍🍳 Sử dụng nấm hương rừng để tạo mùi thơm đặc trưng cho món ăn.\r\n🧑‍🍳 Sơ chế bóng bì với rượu và gừng để khử mùi tanh của bóng bì.\r\n\r\n', 'Món ăn cần được áp dụng đồng thời với thực đơn đi kèm theo mới đạt được hiệu quả giảm mỡ thừa.\r\nMón canh bóng có nguyên liệu đa dạng, cung cấp năng lượng vừa phải nhưng lại có đầy đủ thành phần dinh dưỡng từ các chất vi lượng. Món ăn này có thể dùng cho cả những người thừa cân béo phì có bệnh lý mạn tính. Nên ăn món canh này vào đầu bữa ăn, sẽ tạo cảm giác no tốt hơn.\r\nCác món ăn trong thực đơn giảm mỡ thừa làm từ hải sản cần loại bỏ tất cả phần gạch béo, chỉ ăn phần nạc tinh mới đạt mục tiêu giảm mỡ thừa.\r\nCần ăn chậm, nhai thật kỹ thức ăn rồi mới nuốt nếu đang trong chương trình can thiệp giảm cân và giảm mỡ thừa.\r\nThực đơn giảm mỡ thừa sẽ có mức năng lượng thấp để cơ thể sử dụng mỡ thừa sinh năng lượng. Quá trình này vần cần cung cấp đầy đủ nước và các vitamin tan trong nước. Vì vậy, cần uống đủ lượng nước 40ml/kg/ngày và mỗi tuần nên có 4-5 bữa ăn các loại hạt thô nguyên vỏ, gạo lức, khoai củ thô…', NULL, '2025-05-03 15:48:29'),
@@ -365,15 +392,15 @@ CREATE TABLE `recipe_cooking_methods` (
 INSERT INTO `recipe_cooking_methods` (`id`, `recipe_id`, `cooking_method_id`) VALUES
 ('0a8fac44-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '765b2c4b-0534-11f0-a1d9-60a82de70049'),
 ('0a8fb1be-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '765b2d2e-0534-11f0-a1d9-60a82de70049'),
+('17eb7ed5-2b1b-11f0-a774-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '765b0b44-0534-11f0-a1d9-60a82de70049'),
 ('21235cd9-2996-11f0-aded-fc34974bb26c', '629888f3-27fb-11f0-b0f6-fc34974bb26c', '765b2ce4-0534-11f0-a1d9-60a82de70049'),
 ('38457ec2-2997-11f0-aded-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', '765b2c22-0534-11f0-a1d9-60a82de70049'),
 ('3d3d5910-2995-11f0-aded-fc34974bb26c', 'de508421-27f9-11f0-b0f6-fc34974bb26c', '765b2c4b-0534-11f0-a1d9-60a82de70049'),
 ('3d7fd500-2996-11f0-aded-fc34974bb26c', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', '765b2c4b-0534-11f0-a1d9-60a82de70049'),
+('439ca01b-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '765b2d19-0534-11f0-a1d9-60a82de70049'),
 ('4fc3e8a0-2996-11f0-aded-fc34974bb26c', 'fcb54590-27fa-11f0-b0f6-fc34974bb26c', '765b2c4b-0534-11f0-a1d9-60a82de70049'),
-('64dc5293-2995-11f0-aded-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '765b2ce4-0534-11f0-a1d9-60a82de70049'),
-('737e4b55-2996-11f0-aded-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '765b0b44-0534-11f0-a1d9-60a82de70049'),
 ('99d660dd-2995-11f0-aded-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', '765b2ce4-0534-11f0-a1d9-60a82de70049'),
-('a0fcdf1b-2997-11f0-aded-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '765b2d19-0534-11f0-a1d9-60a82de70049'),
+('a0cdb5f6-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '765b2ce4-0534-11f0-a1d9-60a82de70049'),
 ('bc81953d-2996-11f0-aded-fc34974bb26c', '98f76e50-27fe-11f0-b0f6-fc34974bb26c', '765b2d19-0534-11f0-a1d9-60a82de70049'),
 ('c463e08b-2995-11f0-aded-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', '765b2c4b-0534-11f0-a1d9-60a82de70049'),
 ('cd477da7-2997-11f0-aded-fc34974bb26c', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', '765b2d19-0534-11f0-a1d9-60a82de70049'),
@@ -544,15 +571,17 @@ CREATE TABLE `recipe_meal_categories` (
 
 INSERT INTO `recipe_meal_categories` (`id`, `recipe_id`, `meal_category_id`) VALUES
 ('0a8fa3bf-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '961dc36a-0535-11f0-a1d9-60a82de70049'),
+('17eb5fb6-2b1b-11f0-a774-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
 ('21234c41-2996-11f0-aded-fc34974bb26c', '629888f3-27fb-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
 ('38457026-2997-11f0-aded-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
 ('3d3d523c-2995-11f0-aded-fc34974bb26c', 'de508421-27f9-11f0-b0f6-fc34974bb26c', '961dc36a-0535-11f0-a1d9-60a82de70049'),
 ('3d7f8ed3-2996-11f0-aded-fc34974bb26c', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', '961dc36a-0535-11f0-a1d9-60a82de70049'),
+('439c8afe-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
+('439c8f66-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '961dbf55-0535-11f0-a1d9-60a82de70049'),
 ('4fc39af3-2996-11f0-aded-fc34974bb26c', 'fcb54590-27fa-11f0-b0f6-fc34974bb26c', '961dc36a-0535-11f0-a1d9-60a82de70049'),
-('64dc4ba9-2995-11f0-aded-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
-('737e4081-2996-11f0-aded-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
 ('99d65680-2995-11f0-aded-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
-('a0fcd342-2997-11f0-aded-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
+('a0cd9144-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
+('a0cd9a33-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '961dbf55-0535-11f0-a1d9-60a82de70049'),
 ('bc813237-2996-11f0-aded-fc34974bb26c', '98f76e50-27fe-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
 ('c463d950-2995-11f0-aded-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', '961dc36a-0535-11f0-a1d9-60a82de70049'),
 ('cd473b5c-2997-11f0-aded-fc34974bb26c', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', '961dc304-0535-11f0-a1d9-60a82de70049'),
@@ -578,17 +607,18 @@ CREATE TABLE `recipe_meal_types` (
 INSERT INTO `recipe_meal_types` (`id`, `recipe_id`, `mealtype_id`) VALUES
 ('0a8f51d6-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
 ('0a8f571b-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
+('17ead9c3-2b1b-11f0-a774-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
+('17eae4b2-2b1b-11f0-a774-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '030eac2e-0536-11f0-a1d9-60a82de70049'),
 ('212336ca-2996-11f0-aded-fc34974bb26c', '629888f3-27fb-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
 ('3845696d-2997-11f0-aded-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
 ('3d3d483f-2995-11f0-aded-fc34974bb26c', 'de508421-27f9-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
 ('3d7f45b3-2996-11f0-aded-fc34974bb26c', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', '9dabffaf-21b5-11f0-8cfe-6d7e2f6fa0d7'),
+('439bba71-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
+('439bc575-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
 ('4fc3431c-2996-11f0-aded-fc34974bb26c', 'fcb54590-27fa-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
-('64dbf26e-2995-11f0-aded-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '9dabffaf-21b5-11f0-8cfe-6d7e2f6fa0d7'),
-('737dddd8-2996-11f0-aded-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
-('737de36d-2996-11f0-aded-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '030eac2e-0536-11f0-a1d9-60a82de70049'),
 ('99d64f3b-2995-11f0-aded-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
-('a0fc6dae-2997-11f0-aded-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
-('a0fcc655-2997-11f0-aded-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
+('a0cd6768-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '9dabffaf-21b5-11f0-8cfe-6d7e2f6fa0d7'),
+('a0cd70f8-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '030eac2e-0536-11f0-a1d9-60a82de70049'),
 ('bc812b70-2996-11f0-aded-fc34974bb26c', '98f76e50-27fe-11f0-b0f6-fc34974bb26c', '030eac1b-0536-11f0-a1d9-60a82de70049'),
 ('c4638912-2995-11f0-aded-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', '030eab9f-0536-11f0-a1d9-60a82de70049'),
 ('cd46ebfe-2997-11f0-aded-fc34974bb26c', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', '9dabffaf-21b5-11f0-8cfe-6d7e2f6fa0d7'),
@@ -613,15 +643,15 @@ CREATE TABLE `recipe_nutrition_needs` (
 
 INSERT INTO `recipe_nutrition_needs` (`id`, `recipe_id`, `nutrition_needs_id`) VALUES
 ('0a8ffa21-2995-11f0-aded-fc34974bb26c', '63178aec-27f9-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
+('17eba2c7-2b1b-11f0-a774-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('21236491-2996-11f0-aded-fc34974bb26c', '629888f3-27fb-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('3845856f-2997-11f0-aded-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('3d3d6070-2995-11f0-aded-fc34974bb26c', 'de508421-27f9-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('3d801d59-2996-11f0-aded-fc34974bb26c', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
+('439cf22b-2d83-11f0-921a-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('4fc4400d-2996-11f0-aded-fc34974bb26c', 'fcb54590-27fa-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
-('64dc590a-2995-11f0-aded-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
-('737e5640-2996-11f0-aded-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('99d6afc4-2995-11f0-aded-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
-('a0fcec9e-2997-11f0-aded-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
+('a0ce3cd9-2fde-11f0-957d-fc34974bb26c', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('bc81de8c-2996-11f0-aded-fc34974bb26c', '98f76e50-27fe-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('c463e73c-2995-11f0-aded-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
 ('cd478499-2997-11f0-aded-fc34974bb26c', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', '871150e1-0536-11f0-a1d9-60a82de70049'),
@@ -652,6 +682,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `permission_id`, `name`, `email`, `password`, `created_at`, `gender`, `birthday`, `banned_until`, `avatar`) VALUES
+('28851978-2cb1-11f0-bee5-fc34974bb26c', 2, 'thế hải', 'thehai@gmail.com', '$2b$10$I3EITGuqpK1V3YHKYNc.be6nTtxXer0q8bM40h3Wonx6fl2uMW6ei', '2025-05-09 15:39:44', 1, '2002-05-03 06:00:00', NULL, 'resources/user-img/efb00c2a70d70d79d83dee2d044599b8.jpg'),
 ('4a7666ab-27f6-11f0-b0f6-fc34974bb26c', 2, 'Bất quy tắc', 'tac@gmail.com', '$2b$10$pbTsJF8kq8OLohZGSUaYBOuybfh7REoWk.0bHViemc4U6uJnAs47.', '2025-05-03 15:12:01', 1, '2001-09-22 00:00:00', NULL, 'resources/default-avatar.png'),
 ('6cea5cdc-0880-11f0-9ee4-57838c346148', 2, 'Hoàng Nghiệp', 'nghiep@gmail.com', '$2b$10$agTkK0PbYHI.PBB.c7VsHOVy1LDMjCebFkBl4g9ITkqkSjv7BxswG', '2025-03-24 14:19:56', 0, '2003-09-25 10:00:00', NULL, 'resources/user-img/7399e74f777a3b38373561ed09a614c7.jpg'),
 ('c5ac6d06-fafd-11ef-a991-38fc9861f2be', 2, 'nghiep1', 'anhnghiep12@gmail.com', '$2b$10$xJrJ3nn8V8uzI93RIi0RYe5FxT52KCVPcfu33CQODcSfNd6KpsxWO', '2025-03-07 09:41:47', 2, '2001-09-22 00:00:00', NULL, 'resources/user-img/1b91cd5a830809cb30b8194571ad600e.png'),
@@ -665,15 +696,38 @@ INSERT INTO `user` (`id`, `permission_id`, `name`, `email`, `password`, `created
 
 CREATE TABLE `user_meal_plans` (
   `id` char(36) NOT NULL,
-  `user_id` char(36) DEFAULT NULL,
-  `recipe_id` char(36) DEFAULT NULL,
-  `date` datetime NOT NULL,
-  `meal_time` int(11) DEFAULT NULL
+  `user_id` char(36) NOT NULL,
+  `recipe_id` char(36) NOT NULL,
+  `menu_number` tinyint(4) DEFAULT NULL,
+  `meal_time` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `user_meal_plans`
+--
+
+INSERT INTO `user_meal_plans` (`id`, `user_id`, `recipe_id`, `menu_number`, `meal_time`) VALUES
+('159c5f5d-2cbb-11f0-bee5-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', 3, 1),
+('159cbca2-2cbb-11f0-bee5-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', 3, 3),
+('325bfa8e-2fde-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', 1, 2),
+('3637be57-2fde-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 1, 1),
+('399b69ac-2fde-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '98f76e50-27fe-11f0-b0f6-fc34974bb26c', 1, 3),
+('78fed8ba-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 2, 1),
+('820b6bfb-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', 7, 3),
+('84c149e8-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', 7, 2),
+('9382feeb-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', 2, 2);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `recipe_id` (`recipe_id`);
 
 --
 -- Indexes for table `cooking_methods`
@@ -777,12 +831,19 @@ ALTER TABLE `user`
 --
 ALTER TABLE `user_meal_plans`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
+  ADD UNIQUE KEY `unique_plan` (`user_id`,`menu_number`,`meal_time`),
   ADD KEY `recipe_id` (`recipe_id`);
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`);
 
 --
 -- Constraints for table `favorite_recipes`
