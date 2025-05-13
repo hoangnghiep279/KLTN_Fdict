@@ -13,6 +13,19 @@
   max-width: calc(100% - 48px);
   margin: 0 auto;
 }
+.slider-wrapper {
+  position: relative !important;
+  overflow: visible !important;
+}
+.recipe-swiper .swiper-button-prev {
+  left: -30px !important;
+  z-index: 10;
+}
+
+.recipe-swiper .swiper-button-next {
+  right: -30px !important;
+  z-index: 10;
+}
 
 .flex-center {
   display: flex;
@@ -53,4 +66,15 @@
   color: #ff8c42;
   border-color: #ff8c42;
   border: 1px solid #ff8c42;
+}
+/* file: index.css hoặc App.css */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #fff;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ff8c42;
+  border-radius: 10px;
 }

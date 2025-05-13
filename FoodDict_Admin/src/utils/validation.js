@@ -81,7 +81,7 @@ function validateRecipe(values, fields = []) {
 
   // Validate số (serving_size, cooking_time, calories)
   if (fields.includes("serving_size")) {
-    if (!values.serving_size.trim()) {
+    if (!values.serving_size) {
       errors.serving_size = "Vui lòng nhập khẩu phần ăn";
     } else if (!numberRegex.test(values.serving_size)) {
       errors.serving_size = "Khẩu phần ăn phải là số nguyên";

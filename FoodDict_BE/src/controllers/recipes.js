@@ -86,7 +86,6 @@ async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
   }
 }
 
-
 async function searchRecipes({
   keyword = "",
   dinh_duong = [],
@@ -152,7 +151,7 @@ async function searchRecipes({
       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-      ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
+      ${conditions.length > 0 ? "WHERE " + conditions.join(" OR ") : ""}
     `;
     const [countResult] = await db.query(countSql, values);
     const totalItems = countResult[0].total;
@@ -167,7 +166,7 @@ async function searchRecipes({
       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-      ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
+      ${conditions.length > 0 ? "WHERE " + conditions.join(" OR ") : ""}
       LIMIT ? OFFSET ?
     `;
 
@@ -178,143 +177,6 @@ async function searchRecipes({
     throw error;
   }
 }
-
-// async function searchRecipes({
-//   keyword = "",
-//   dinh_duong = [],
-//   nguyen_lieu = [],
-//   cach_nau = [],
-//   loai_bua_an = [],
-//   danh_muc_mon_an = [],
-
-// }) {
-//   try {
-//     const conditions = [];
-//     const values = [];
-
-//     // Keyword search (by recipe name)
-//     if (keyword.trim() !== "") {
-//       conditions.push(`r.name LIKE ?`);
-//       values.push(`%${keyword}%`);
-//     }
-
-//     if (dinh_duong.length > 0) {
-//       conditions.push(
-//         `rn.nutrition_needs_id IN (${dinh_duong.map(() => "?").join(",")})`
-//       );
-//       values.push(...dinh_duong);
-//     }
-
-//     if (nguyen_lieu.length > 0) {
-//       conditions.push(
-//         `ri.ingredient_id IN (${nguyen_lieu.map(() => "?").join(",")})`
-//       );
-//       values.push(...nguyen_lieu);
-//     }
-
-//     if (cach_nau.length > 0) {
-//       conditions.push(
-//         `rc.cooking_method_id IN (${cach_nau.map(() => "?").join(",")})`
-//       );
-//       values.push(...cach_nau);
-//     }
-
-//     if (loai_bua_an.length > 0) {
-//       conditions.push(
-//         `mt.mealtype_id IN (${loai_bua_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...loai_bua_an);
-//     }
-
-//     if (danh_muc_mon_an.length > 0) {
-//       conditions.push(
-//         `mc.meal_category_id IN (${danh_muc_mon_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...danh_muc_mon_an);
-//     }
-
-//     const sql = `
-//       SELECT DISTINCT r.*
-//       FROM recipes r
-//       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
-//       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-//       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
-//       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
-//       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-//       ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
-//     `;
-
-//     const [results] = await db.query(sql, values);
-//     return { code: 200, data: results };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
-
-// async function searchRecipes({
-//   dinh_duong = [],
-//   nguyen_lieu = [],
-//   cach_nau = [],
-//   loai_bua_an = [],
-//   danh_muc_mon_an = [],
-// }) {
-//   try {
-//     const conditions = [];
-//     const values = [];
-
-//     if (dinh_duong.length > 0) {
-//       conditions.push(
-//         `rn.nutrition_needs_id IN (${dinh_duong.map(() => "?").join(",")})`
-//       );
-//       values.push(...dinh_duong);
-//     }
-
-//     if (nguyen_lieu.length > 0) {
-//       conditions.push(
-//         `ri.ingredient_id IN (${nguyen_lieu.map(() => "?").join(",")})`
-//       );
-//       values.push(...nguyen_lieu);
-//     }
-
-//     if (cach_nau.length > 0) {
-//       conditions.push(
-//         `rc.cooking_method_id IN (${cach_nau.map(() => "?").join(",")})`
-//       );
-//       values.push(...cach_nau);
-//     }
-
-//     if (loai_bua_an.length > 0) {
-//       conditions.push(
-//         `mt.mealtype_id IN (${loai_bua_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...loai_bua_an);
-//     }
-
-//     if (danh_muc_mon_an.length > 0) {
-//       conditions.push(
-//         `mc.meal_category_id IN (${danh_muc_mon_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...danh_muc_mon_an);
-//     }
-
-//     const sql = `
-//       SELECT DISTINCT r.*
-//       FROM recipes r
-//       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
-//       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-//       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
-//       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
-//       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-//       ${conditions.length > 0 ? "WHERE (" + conditions.join(" OR ") + ")" : ""}
-//     `;
-
-//     const [results] = await db.query(sql, values);
-//     return { code: 200, data: results };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
-
 
 async function getRecipeById(id) {
   try {
@@ -355,6 +217,60 @@ async function getRecipeById(id) {
     };
   } catch (error) {
     throw error; // Để router xử lý lỗi
+  }
+}
+
+async function getRecipeByIdForUser(id, userId) {
+  try {
+    if (!id) {
+      const error = new Error("Thiếu ID món ăn");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // Lấy thông tin món ăn
+    const [recipe] = await db.query(
+      `SELECT id, name, img_url, serving_size, cooking_time, difficulty, calories, 
+              description, preparation, instructions, usagefood, tips, 
+              expert_advice, img_nutrition 
+       FROM recipes WHERE id = ?`,
+      [id]
+    );
+
+    if (recipe.length === 0) {
+      const error = new Error("Món ăn không tồn tại!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Lấy thành phần nguyên liệu
+    const [ingredients] = await db.query(
+      `SELECT i.id, i.name, i.category, i.type, ri.quantity, ri.unit
+       FROM recipe_ingredients ri
+       JOIN ingredients i ON ri.ingredient_id = i.id
+       WHERE ri.recipe_id = ?`,
+      [id]
+    );
+
+    // Kiểm tra xem userId có yêu thích món ăn này không
+    let isFavorite = false;
+    if (userId) {
+      const [favorites] = await db.query(
+        `SELECT 1 FROM favorite_recipes WHERE user_id = ? AND recipe_id = ?`,
+        [userId, id]
+      );
+      isFavorite = favorites.length > 0;
+    }
+
+    return {
+      recipe: {
+        ...recipe[0],
+        isFavorite, // thêm trạng thái yêu thích
+      },
+      ingredients,
+    };
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -425,7 +341,7 @@ async function insertRecipe(recipe) {
       if (!ing.name) {
         continue; // Chỉ bỏ qua nếu thiếu tên
       }
-    
+
       let [ingredientResult] = await connection.query(
         "SELECT id FROM ingredients WHERE name = ? AND category = ? AND type = ?",
         [ing.name, ing.category, ing.type]
@@ -861,6 +777,7 @@ module.exports = {
   getRecipesWithFavoriteStatus,
   searchRecipes,
   getRecipeById,
+  getRecipeByIdForUser,
   getRecipeUpdate,
   insertRecipe,
   updateRecipe,

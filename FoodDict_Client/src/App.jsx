@@ -9,6 +9,7 @@ import CookMethod from "./pages/CookMethod";
 import MealOfDay from "./pages/MealOfDay";
 import MealType from "./pages/MealType";
 import Nutrition from "./pages/Nutrition";
+import MealPlanner from "./pages/MealPlanner";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/mealofday" element={<MealOfDay />} />
         <Route path="/mealtype" element={<MealType />} />
         <Route path="/nutrition" element={<Nutrition />} />
+        <Route path="/user-recipe-plan" element={<MealPlanner />} />
       </Route>
     </Routes>
   );

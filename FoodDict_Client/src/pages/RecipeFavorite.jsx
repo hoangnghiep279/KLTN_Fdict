@@ -3,7 +3,7 @@ import Loading from "../components/Loading";
 import { fetchFavRecipe } from "../api/linkrecipe/favoriteRecipe";
 import Food from "../components/Food";
 import Pagination from "../components/Pagination";
-import { useNavigate } from "react-router-dom"; // Sửa lại hook này
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function RecipeFavorite() {
@@ -35,7 +35,9 @@ function RecipeFavorite() {
 
   return (
     <div className="py-10 container mx-auto">
-      <h1 className="text-center text-3xl font-bold mb-6">Món ăn yêu thích</h1>
+      <h1 className="text-center text-3xl font-extrabold text-red-500 mb-6 ">
+        Món ăn yêu thích 😋
+      </h1>
 
       <div className="mt-10 flex items-center gap-8 flex-wrap">
         {loading ? (

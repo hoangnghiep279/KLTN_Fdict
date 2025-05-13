@@ -35,25 +35,27 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/recipefav",checkLogin, async (req, res, next) => {
+// lấy tất cả công thức khi đăng nhập
+router.get("/recipefav", checkLogin, async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const userId = req.payload.id;
 
-
-    const result = await controller.getRecipesWithFavoriteStatus(userId, page, limit);
+    const result = await controller.getRecipesWithFavoriteStatus(
+      userId,
+      page,
+      limit
+    );
     res.json(result);
   } catch (error) {
     next(error);
   }
 });
 
-
 // lọc công thức
 router.post("/search", async (req, res, next) => {
   try {
-
     const result = await controller.searchRecipes(req.body);
     res.json(result);
   } catch (error) {
@@ -65,6 +67,16 @@ router.post("/search", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     res.json(await controller.getRecipeById(req.params.id));
+  } catch (error) {
+    next(error);
+  }
+});
+// lấy công thức với id khi đăng nhập
+router.get("/detail-foruser/:id", checkLogin, async (req, res, next) => {
+  try {
+    res.json(
+      await controller.getRecipeByIdForUser(req.params.id, req.payload.id)
+    );
   } catch (error) {
     next(error);
   }
@@ -90,7 +102,7 @@ router.post(
   async (req, res, next) => {
     try {
       console.log(req.body);
-      
+
       if (!req.body || Object.keys(req.body).length === 0) {
         return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
       }

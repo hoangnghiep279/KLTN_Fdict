@@ -26,5 +26,20 @@ const fetchRecipesWithFavoriteStatus = async (
     setLoading(false);
   }
 };
+const fetchRecipesforSlider = async (setRecipes, setLoading, token) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/recipe/recipefav`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-export default fetchRecipesWithFavoriteStatus;
+    setRecipes(response.data.data);
+  } catch (error) {
+    console.error("Lỗi khi lấy món ăn:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export { fetchRecipesWithFavoriteStatus, fetchRecipesforSlider };

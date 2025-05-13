@@ -18,43 +18,6 @@ function Food({ recipe, onChangeFavorite }) {
     navigate(`/detailRecipe/${recipe.id}`);
   };
 
-  // const handleFavoriteClick = async () => {
-  //   try {
-  //     if (!token) {
-  //       alert("Bạn cần đăng nhập để yêu thích món ăn!");
-  //       return;
-  //     }
-
-  //     const response = await fetch(`http://localhost:3000/favorite-recipe`, {
-  //       method: isFavorite ? "DELETE" : "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ recipeId: recipe.id }),
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       setIsFavorite(!isFavorite);
-  //       setFavoriteCount((prev) => (isFavorite ? prev - 1 : prev + 1));
-
-  //       // Hiển thị thông báo toast
-  //       if (isFavorite) {
-  //         toast.error("Đã xóa món ăn khỏi yêu thích!");
-  //       } else {
-  //         toast.success("Đã thêm món ăn vào yêu thích!");
-  //       }
-  //     } else {
-  //       alert(data.message || "Đã có lỗi xảy ra!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Lỗi khi xử lý yêu thích:", error);
-  //     alert("Có lỗi xảy ra khi xử lý yêu thích. Vui lòng thử lại!");
-  //   }
-  // };
-
   const handleFavoriteClick = async () => {
     try {
       if (!token) {

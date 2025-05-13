@@ -16,7 +16,7 @@ function LayoutWeb() {
         <Header />
         {/* <Crolltotop /> */}
       </header>
-      <main className="mt-32">
+      <main className="mt-32 ">
         <img src={fdecor4} alt="" className="fixed w-24 h-24 bottom-7 left-7" />
         <img
           src={fdecor2}
@@ -29,7 +29,7 @@ function LayoutWeb() {
         <img src={fdecor5} alt="" className="fixed w-14 h-14 top-1/4 left-20" />
         <Outlet />
       </main>
-      <footer className="mt-10">
+      <footer>
         <Footer />
       </footer>
     </div>

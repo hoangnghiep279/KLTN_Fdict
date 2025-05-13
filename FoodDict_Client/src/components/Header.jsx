@@ -94,7 +94,9 @@ function Header() {
           </Link>
         </li>
         <li>
-          <NavLink className={`font-bold text-nowrap`}>Kế hoạch nấu ăn</NavLink>
+          <NavLink to={"/user-recipe-plan"} className={`font-bold text-nowrap`}>
+            Kế hoạch nấu ăn
+          </NavLink>
         </li>
         <li>
           <NavLink to={"/favorite"} className={`font-bold text-nowrap`}>

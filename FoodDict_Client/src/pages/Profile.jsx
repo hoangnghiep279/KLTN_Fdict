@@ -147,14 +147,14 @@ function Profile() {
                 className="border p-2 ml-2 rounded"
               >
                 <option value="">--Chọn giới tính--</option>
-                <option value="0">Nam</option>
-                <option value="1">Nữ</option>
+                <option value="1">Nam</option>
+                <option value="2">Nữ</option>
               </select>
-            ) : user.gender === 0 ? (
+            ) : user.gender === 1 ? (
               <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
                 Nam
               </span>
-            ) : user.gender === 1 ? (
+            ) : user.gender === 2 ? (
               <span className="border py-1 px-3 rounded-lg bg-[#dfcec41b] border-[#cbb1a2]">
                 Nữ
               </span>

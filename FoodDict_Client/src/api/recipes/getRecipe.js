@@ -20,5 +20,16 @@ const fetchRecipes = async (
     setLoading(false);
   }
 };
+const fetchRecipesSlider = async (setRecipes, setLoading) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/recipe`);
 
-export default fetchRecipes;
+    setRecipes(response.data.data);
+  } catch (error) {
+    console.error("Lỗi khi lấy món ăn:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export { fetchRecipes, fetchRecipesSlider };

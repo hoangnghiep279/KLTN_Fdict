@@ -5,11 +5,12 @@ import { FaFilter } from "react-icons/fa6";
 import { FaArrowRight } from "react-icons/fa";
 import Food from "../components/Food";
 import Loading from "../components/Loading";
-import fetchRecipes from "../api/recipes/getRecipe";
+import { fetchRecipes } from "../api/recipes/getRecipe";
 import FilterPanel from "../components/FilterPanel";
 import searchRecipes from "../api/recipes/searchRecipes";
 import Pagination from "../components/Pagination";
-import fetchRecipesWithFavoriteStatus from "../api/recipes/getRecipewithFav";
+import { fetchRecipesWithFavoriteStatus } from "../api/recipes/getRecipewithFav";
+
 function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,10 +25,9 @@ function Home() {
     nguyen_lieu: [],
     cach_nau: [],
     loai_bua_an: [],
-    danh_muc_mon_an: [], // giữ nguyên đúng key
+    danh_muc_mon_an: [],
   });
 
-  // Cập nhật filters khi người dùng chọn
   const handleFilterChange = (updatedFilters) => {
     setSelectedFilters(updatedFilters);
   };
@@ -105,7 +105,7 @@ function Home() {
   if (loading) return <Loading />;
 
   return (
-    <div className="container">
+    <div className="container pb-16">
       <video src={banner} autoPlay loop muted className="rounded-3xl "></video>
       <div className="w-2/5 mx-auto box-shadow border-4 rounded-2xl absolute top-[25rem] left-1/2 -translate-x-1/2 border-[#FDE7E8] p-4">
         <p className="text-center text-xl italic font-bold">
@@ -151,7 +151,6 @@ function Home() {
           </div>
         )}
         <h2 className="text-4xl font-extrabold text-center">Thực đơn</h2>
-
         <div className="mt-10 flex items-center gap-8 flex-wrap">
           {recipes.length > 0 ? (
             recipes.map((recipe) => <Food key={recipe.id} recipe={recipe} />)
