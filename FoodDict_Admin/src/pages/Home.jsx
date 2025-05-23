@@ -4,6 +4,7 @@ import Loading from "../components/Loading";
 import fetchRecipes from "../api/recipes/getRecipes";
 import deleteRecipe from "../api/recipes/deleteRecipe";
 import Pagination from "../components/Pagination";
+
 function Home() {
   const id = useParams();
   const [recipes, setRecipes] = useState([]);
@@ -11,19 +12,45 @@ function Home() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
-  console.log(recipes);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
-    fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit);
-  }, [page, limit]);
+    fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit, search);
+  }, [page, limit, search]); // <-- thêm search vào dependency
+
   const handleDelete = (id) => {
     deleteRecipe(id, (deletedId) => {
       setRecipes((prev) => prev.filter((recipe) => recipe.id !== deletedId));
     });
   };
+
   if (loading) return <Loading />;
+
   return (
     <div className="bg-[#F9FAFF] h-screen p-6">
       <h3 className="text-3xl font-bold mb-4">Danh sách công thức</h3>
+
+      {/* 🔍 Thanh tìm kiếm */}
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Tìm món ăn theo tên..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-gray-300 rounded px-4 py-2 w-96 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <button
+          onClick={() => {
+            setPage(1); // Reset về trang đầu tiên
+            setSearch(searchInput); // Cập nhật từ khóa chính thức
+          }}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Tìm
+        </button>
+      </div>
+
       {recipes.length > 0 ? (
         <div className="overflow-y-auto min-h-[450px]">
           <table className="w-[85%] border-collapse">
@@ -88,7 +115,7 @@ function Home() {
           </table>
         </div>
       ) : (
-        <p>Chưa có công thức</p>
+        <p>Không tìm thấy công thức phù hợp.</p>
       )}
       <Pagination
         page={page}

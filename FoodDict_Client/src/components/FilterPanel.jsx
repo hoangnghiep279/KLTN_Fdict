@@ -116,17 +116,25 @@ const FilterPanel = ({ onFilterChange }) => {
 
               if (!displayItems.length) return null;
 
+              // Lấy unique categories để tránh lặp
+              const uniqueCategories = Array.from(
+                new Set(displayItems.map((item) => item.category))
+              );
+
               return (
                 <div key={groupName} className="mb-4">
                   <p className="font-medium">{capitalize(groupName)}</p>
                   <div className="grid grid-cols-4 gap-3 mt-1">
-                    {displayItems.map((item) => (
-                      <label key={item.id} className="flex gap-2 items-center">
+                    {uniqueCategories.map((category) => (
+                      <label key={category} className="flex gap-2 items-center">
                         <input
                           type="checkbox"
-                          onChange={() => handleChange("nguyen_lieu", item.id)}
+                          checked={selectedFilters.nguyen_lieu.includes(
+                            category
+                          )}
+                          onChange={() => handleChange("nguyen_lieu", category)}
                         />
-                        <span>{item.name}</span>
+                        <span>{category}</span>
                       </label>
                     ))}
                   </div>
@@ -135,7 +143,6 @@ const FilterPanel = ({ onFilterChange }) => {
             })}
           </div>
         )}
-
         {activeSection === "cach_nau" && (
           <div className="grid grid-cols-4 gap-3">
             {cookMethods.map((item) => (

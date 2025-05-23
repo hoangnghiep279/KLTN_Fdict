@@ -5,7 +5,7 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { BiCategory } from "react-icons/bi";
 import { LuUserRoundCog } from "react-icons/lu";
-
+import { ImExit } from "react-icons/im";
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,7 +17,7 @@ function Header() {
       icon: <IoFastFoodOutline className="mr-2 text-2xl" />,
       links: [
         { name: "Danh sách công thức", to: "/" },
-        { name: "Thêm công thức", to: "/insertRecipe" },
+        { name: "Thêm công thức", to: "/admin/insertRecipe" },
       ],
     },
     {
@@ -25,9 +25,12 @@ function Header() {
       icon: <BiCategory className="mr-2 text-2xl" />,
       links: [
         // { name: "Danh mục nguyên liệu", to: "/ingredients" },
-        { name: "Danh mục chế biến", to: "/cookingMethods" },
-        { name: "Danh mục theo nhu cầu dinh dưỡng", to: "/nutritionNeeds" },
-        { name: "Danh mục loại món ăn", to: "/mealTypes" },
+        { name: "Danh mục chế biến", to: "/admin/cookingMethods" },
+        {
+          name: "Danh mục theo nhu cầu dinh dưỡng",
+          to: "/admin/nutritionNeeds",
+        },
+        { name: "Danh mục loại món ăn", to: "/admin/mealTypes" },
       ],
     },
   ];
@@ -42,6 +45,10 @@ function Header() {
 
   const handleClick = (index) => {
     setOpenDropdown(openDropdown === index ? null : index);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
@@ -88,7 +95,7 @@ function Header() {
         ))}
 
         <NavLink
-          to={"/user-management"}
+          to={"/admin/user-management"}
           className={`flex items-center px-2 py-2 cursor-pointer rounded-lg 
             ${
               location.pathname === "/user-management"
@@ -100,6 +107,13 @@ function Header() {
           <LuUserRoundCog className="mr-2 text-2xl" />
           Quản lý người dùng
         </NavLink>
+        <button
+          onClick={handleLogout}
+          className={`flex items-center px-2 py-2 cursor-pointer rounded-lg`}
+        >
+          <ImExit className="mr-2 text-2xl" />
+          Đăng xuất
+        </button>
       </ul>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaPlusCircle } from "react-icons/fa";
 import { PiChefHatBold } from "react-icons/pi";
 import { GiRiceCooker } from "react-icons/gi";
@@ -82,11 +83,15 @@ function RecipeCardTwo({ recipe, onAddSuccess }) {
       )}
 
       <div className="flex gap-5 items-center">
-        <div className="w-32 h-16 rounded-lg overflow-hidden">
-          <img src={`http://localhost:3000/${recipe.img_url}`} alt="" />
-        </div>
+        <Link to={`/detailRecipe/${recipe.id}`}>
+          <div className="w-32 h-16 rounded-lg overflow-hidden">
+            <img src={`http://localhost:3000/${recipe.img_url}`} alt="" />
+          </div>
+        </Link>
         <div>
-          <p className="font-bold text-lg mb-3">{recipe.name}</p>
+          <Link to={`/detailRecipe/${recipe.id}`}>
+            <p className="font-bold text-lg mb-3">{recipe.name}</p>
+          </Link>
           <div className="flex flex-wrap items-center gap-3">
             <span className="flex items-center px-2 py-1 border border-[#ff8a4228] rounded-md text-sm">
               <MdPeopleOutline className="text-primaryColor mr-2 text-base" />

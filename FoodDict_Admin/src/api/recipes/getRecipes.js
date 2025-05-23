@@ -5,17 +5,22 @@ const fetchRecipes = async (
   setTotalPages,
   setLoading,
   page,
-  limit
+  limit,
+  search = ""
 ) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3000/recipe?page=${page}&limit=${limit}`
-    );
-
+    setLoading(true);
+    const response = await axios.get("http://localhost:3000/recipe", {
+      params: {
+        page,
+        limit,
+        search,
+      },
+    });
     setRecipes(response.data.data);
     setTotalPages(response.data.pagination.totalPages);
   } catch (error) {
-    console.error("Lỗi khi lấy món ăn:", error);
+    console.error("Lỗi khi lấy danh sách công thức:", error);
   } finally {
     setLoading(false);
   }

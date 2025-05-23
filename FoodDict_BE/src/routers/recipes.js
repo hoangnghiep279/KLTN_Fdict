@@ -27,8 +27,9 @@ router.get("/", async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
 
-    const result = await controller.getRecipe(page, limit);
+    const result = await controller.getRecipe(page, limit, search);
     res.json(result);
   } catch (error) {
     next(error);
@@ -56,6 +57,7 @@ router.get("/recipefav", checkLogin, async (req, res, next) => {
 // lọc công thức
 router.post("/search", async (req, res, next) => {
   try {
+    console.log(req.body);
     const result = await controller.searchRecipes(req.body);
     res.json(result);
   } catch (error) {
@@ -101,8 +103,6 @@ router.post(
   ]),
   async (req, res, next) => {
     try {
-      console.log(req.body);
-
       if (!req.body || Object.keys(req.body).length === 0) {
         return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
       }

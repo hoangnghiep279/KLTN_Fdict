@@ -171,13 +171,13 @@ async function adminLogin(user) {
     );
 
     if (!rows) {
-      const error = new Error("Thông tin tài khoản không tồn tại!");
+      const error = new Error("Thông tin tài khoản không tồn tại!");
       error.statusCode = 401;
       throw error;
     }
 
     if (rows.permission_id !== 1) {
-      const error = new Error("Bạn không có quyền truy cập!");
+      const error = new Error("Bạn không có quyền truy cập!");
       error.statusCode = 403;
       throw error;
     }
@@ -185,7 +185,7 @@ async function adminLogin(user) {
     const isPasswordMatch = await comparePassword(user.password, rows.password);
     if (!isPasswordMatch) {
       const error = new Error(
-        "Thông tin tài khoản hoặc mật khẩu không chính xác!"
+        "Thông tin tài khoản hoặc mật khẩu không chính xác!"
       );
       error.statusCode = 401;
       throw error;
@@ -193,6 +193,7 @@ async function adminLogin(user) {
 
     const id = rows.id;
     const token = await signToken(id);
+
     return {
       code: 200,
       data: {

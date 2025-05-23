@@ -9,20 +9,22 @@ import Nutrition from "./pages/Nutrition";
 import CookMethod from "./pages/CookMethod";
 import MealType from "./pages/Mealtype";
 import ListUser from "./pages/ListUser";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<LayoutWeb />}>
+      <Route path="/" element={<Login />} />
+      <Route path="/admin" element={<LayoutWeb />}>
         <Route index element={<Home />} />
-        <Route path="updaterecipe/:id" element={<UpdateRecipe />} />
-        <Route path="recipedetail/:id" element={<RecipeDetail />} />
+        <Route path="/admin/updaterecipe/:id" element={<UpdateRecipe />} />
+        <Route path="/admin/recipedetail/:id" element={<RecipeDetail />} />
 
-        <Route path="insertRecipe" element={<InsertRecipe />} />
-        <Route path="nutritionNeeds" element={<Nutrition />} />
-        <Route path="cookingMethods" element={<CookMethod />} />
-        <Route path="user-management" element={<ListUser />} />
-        <Route path="mealTypes" element={<MealType />} />
+        <Route path="/admin/insertRecipe" element={<InsertRecipe />} />
+        <Route path="/admin/nutritionNeeds" element={<Nutrition />} />
+        <Route path="/admin/cookingMethods" element={<CookMethod />} />
+        <Route path="/admin/user-management" element={<ListUser />} />
+        <Route path="/admin/mealTypes" element={<MealType />} />
       </Route>
     </Routes>
   );

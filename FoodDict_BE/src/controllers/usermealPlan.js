@@ -8,7 +8,8 @@ async function getUserMealPlans(userId) {
         user_meal_plans.menu_number, 
         user_meal_plans.meal_time, 
         recipes.name AS recipe_name,
-        recipes.img_url AS recipe_img
+        recipes.img_url AS recipe_img,
+        recipes.id AS recipe_id
       FROM user_meal_plans
       LEFT JOIN recipes ON user_meal_plans.recipe_id = recipes.id
       WHERE user_meal_plans.user_id = ? 

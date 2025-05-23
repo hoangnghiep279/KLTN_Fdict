@@ -55,12 +55,13 @@ function MealPlanner() {
         lunch: null,
         dinner: null,
       }));
-
+      console.log(rawData);
       rawData.forEach((item) => {
         const index = item.menu_number - 1;
         if (index >= 0 && index < 7) {
           const recipeComponent = (
             <RecipeCard
+              id={item.recipe_id}
               name={item.recipe_name}
               image={item.recipe_img}
               onDelete={() => handleDeleteMeal(item.id)}
