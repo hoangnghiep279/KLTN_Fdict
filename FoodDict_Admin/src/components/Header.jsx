@@ -6,6 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { BiCategory } from "react-icons/bi";
 import { LuUserRoundCog } from "react-icons/lu";
 import { ImExit } from "react-icons/im";
+import { FaComment } from "react-icons/fa";
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -106,6 +107,19 @@ function Header() {
         >
           <LuUserRoundCog className="mr-2 text-2xl" />
           Quản lý người dùng
+        </NavLink>
+        <NavLink
+          to={"/admin/comment"}
+          className={`flex items-center px-2 py-2 cursor-pointer rounded-lg 
+            ${
+              location.pathname === "/comment"
+                ? "font-bold text-white bg-[#5932EA]"
+                : "hover:bg-[#5932EA] hover:text-white"
+            }
+          `}
+        >
+          <FaComment className="mr-2 text-2xl" />
+          Quản lý bình luận
         </NavLink>
         <button
           onClick={handleLogout}

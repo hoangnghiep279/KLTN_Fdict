@@ -2,6 +2,20 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/comment");
 const { checkLogin } = require("../middleware/checkLogin");
+
+// lấy danh sách admin
+router.get("/admin", async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const response = await controller.getAllCommentsForAdmin(page, limit);
+    res.status(response.code).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET: Lấy bình luận theo recipe_id
 router.get("/:recipeId", async (req, res, next) => {
   try {
@@ -21,6 +35,17 @@ router.post("/", checkLogin, async (req, res, next) => {
     next(error);
   }
 });
+// routes/comment.route.js
+router.delete("/admin/:id", async (req, res, next) => {
+  try {
+    const commentId = req.params.id;
+    const response = await controller.deleteCommentById(commentId);
+    res.status(response.code).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // xóa
 router.delete("/:id", checkLogin, async (req, res, next) => {
   try {

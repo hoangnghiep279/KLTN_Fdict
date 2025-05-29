@@ -10,6 +10,7 @@ import CookMethod from "./pages/CookMethod";
 import MealType from "./pages/Mealtype";
 import ListUser from "./pages/ListUser";
 import Login from "./pages/Login";
+import Comment from "./pages/Comment";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/admin/nutritionNeeds" element={<Nutrition />} />
         <Route path="/admin/cookingMethods" element={<CookMethod />} />
         <Route path="/admin/user-management" element={<ListUser />} />
+        <Route path="/admin/comment" element={<Comment />} />
         <Route path="/admin/mealTypes" element={<MealType />} />
       </Route>
     </Routes>

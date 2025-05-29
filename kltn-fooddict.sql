@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2025 at 02:51 PM
+-- Generation Time: May 29, 2025 at 10:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -43,7 +43,8 @@ INSERT INTO `comment` (`id`, `user_id`, `recipe_id`, `content`, `created_at`) VA
 ('02a20f58-2cb1-11f0-bee5-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 'ngon', '2025-05-09 15:38:41'),
 ('27edc30f-2c7f-11f0-a16d-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '3c5adf20-27fa-11f0-b0f6-fc34974bb26c', 'ủyytyrt', '2025-05-09 09:41:49'),
 ('332bb124-2cb1-11f0-bee5-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 'ngon', '2025-05-09 15:40:02'),
-('698ce0f2-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'f45dfde0-27fe-11f0-b0f6-fc34974bb26c', 'ngon quá đi', '2025-05-13 16:48:24');
+('698ce0f2-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'f45dfde0-27fe-11f0-b0f6-fc34974bb26c', 'ngon quá đi', '2025-05-13 16:48:24'),
+('e1d886c9-3c66-11f0-a418-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'ea016ec0-32eb-11f0-9152-fc34974bb26c', 'hệ hệ hệ ngon quá', '2025-05-29 15:28:22');
 
 -- --------------------------------------------------------
 
@@ -1379,7 +1380,7 @@ INSERT INTO `user` (`id`, `permission_id`, `name`, `email`, `password`, `created
 ('1ad4c569-3222-11f0-ad72-fc34974bb26c', 1, 'nghiệp', 'admin@gmail.com', '$2b$10$Ip8vq7fEHKgP74QBC5/T5O/oYPbSHB9l34L/hVeWGrEiRuHbjNWmy', '2025-05-16 13:50:50', 1, '2001-09-22 00:00:00', NULL, 'resources/default-avatar.png'),
 ('28851978-2cb1-11f0-bee5-fc34974bb26c', 2, 'thế hải', 'thehai@gmail.com', '$2b$10$I3EITGuqpK1V3YHKYNc.be6nTtxXer0q8bM40h3Wonx6fl2uMW6ei', '2025-05-09 15:39:44', 1, '2002-05-03 06:00:00', NULL, 'resources/user-img/efb00c2a70d70d79d83dee2d044599b8.jpg'),
 ('4a7666ab-27f6-11f0-b0f6-fc34974bb26c', 2, 'Bất quy tắc', 'tac@gmail.com', '$2b$10$pbTsJF8kq8OLohZGSUaYBOuybfh7REoWk.0bHViemc4U6uJnAs47.', '2025-05-03 15:12:01', 1, '2001-09-22 00:00:00', NULL, 'resources/default-avatar.png'),
-('6cea5cdc-0880-11f0-9ee4-57838c346148', 2, 'Hoàng Nghiệp', 'nghiep@gmail.com', '$2b$10$agTkK0PbYHI.PBB.c7VsHOVy1LDMjCebFkBl4g9ITkqkSjv7BxswG', '2025-03-24 14:19:56', 0, '2003-09-25 10:00:00', NULL, 'resources/user-img/7399e74f777a3b38373561ed09a614c7.jpg'),
+('6cea5cdc-0880-11f0-9ee4-57838c346148', 2, 'Hoàng Nghiệp', 'nghiep@gmail.com', '$2b$10$agTkK0PbYHI.PBB.c7VsHOVy1LDMjCebFkBl4g9ITkqkSjv7BxswG', '2025-03-24 14:19:56', 0, '2003-09-25 03:00:00', NULL, 'resources/user-img/a8d16d9fb17ca98c9c32723a2b019f97.jpg'),
 ('c5ac6d06-fafd-11ef-a991-38fc9861f2be', 2, 'nghiep1', 'anhnghiep12@gmail.com', '$2b$10$xJrJ3nn8V8uzI93RIi0RYe5FxT52KCVPcfu33CQODcSfNd6KpsxWO', '2025-03-07 09:41:47', 2, '2001-09-22 00:00:00', NULL, 'resources/user-img/1b91cd5a830809cb30b8194571ad600e.png'),
 ('f42366a7-f96b-11ef-a991-38fc9861f2be', 2, 'hoàngnghiệp', 'anh123@gmail.com', '1', '2025-03-05 09:45:35', 1, '2001-09-22 00:00:00', NULL, NULL);
 
@@ -1411,8 +1412,11 @@ INSERT INTO `user_meal_plans` (`id`, `user_id`, `recipe_id`, `menu_number`, `mea
 ('6a8cfb04-3223-11f0-ad72-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '34796f6e-27fe-11f0-b0f6-fc34974bb26c', 1, 3),
 ('6d73fed5-3223-11f0-ad72-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '56125b0c-27fc-11f0-b0f6-fc34974bb26c', 1, 1),
 ('78fed8ba-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'e7c9817a-27fb-11f0-b0f6-fc34974bb26c', 2, 1),
+('80c86aa0-3c37-11f0-867c-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', 2, 2),
 ('820b6bfb-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'c540df55-27fc-11f0-b0f6-fc34974bb26c', 7, 3),
 ('84c149e8-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', 'a0a25ede-27fa-11f0-b0f6-fc34974bb26c', 7, 2),
+('8582373a-3c37-11f0-867c-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', '448a5cf6-32ee-11f0-9152-fc34974bb26c', 2, 3),
+('89abda8f-3c37-11f0-867c-fc34974bb26c', '6cea5cdc-0880-11f0-9ee4-57838c346148', 'd7081b0d-27fd-11f0-b0f6-fc34974bb26c', 2, 1),
 ('9382feeb-2fdf-11f0-957d-fc34974bb26c', '28851978-2cb1-11f0-bee5-fc34974bb26c', '5a52f386-27ff-11f0-b0f6-fc34974bb26c', 2, 2);
 
 --
