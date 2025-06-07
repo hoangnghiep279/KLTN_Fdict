@@ -16,6 +16,25 @@ router.get("/admin", async (req, res, next) => {
   }
 });
 
+// routes/commentRoutes.js
+
+router.get("/admin/search", async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+
+    const response = await controller.searchCommentsForAdmin(
+      page,
+      limit,
+      search
+    );
+    res.status(response.code).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET: Lấy bình luận theo recipe_id
 router.get("/:recipeId", async (req, res, next) => {
   try {

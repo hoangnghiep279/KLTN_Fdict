@@ -35,18 +35,75 @@ const CommentSection = ({ recipeId, userToken }) => {
     }
   };
 
+  // const handleAddComment = async () => {
+  //   if (!userToken) {
+  //     return toast.error(
+  //       "Bạn chưa đăng nhập! Vui lòng đăng nhập để bình luận."
+  //     );
+  //   }
+  //   if (!newComment.trim()) {
+  //     return toast.error("Bình luận không được để trống!");
+  //   }
+
+  //   try {
+  //     await addComment({ content: newComment, recipe_id: recipeId }, userToken);
+  //     setNewComment("");
+  //     loadComments();
+  //   } catch (error) {
+  //     console.error("Lỗi khi thêm bình luận:", error);
+  //   }
+  // };
+
   const handleAddComment = async () => {
     if (!userToken) {
       return toast.error(
         "Bạn chưa đăng nhập! Vui lòng đăng nhập để bình luận."
       );
     }
-    if (!newComment.trim()) {
+
+    const trimmedComment = newComment.trim();
+    if (!trimmedComment) {
       return toast.error("Bình luận không được để trống!");
     }
 
+    const bannedWords = [
+      "đm",
+      "dm",
+      "vkl",
+      "vcl",
+      "vcc",
+      "cl",
+      "cc",
+      "cmm",
+      "con đĩ",
+      "con chó",
+      "địt",
+      "lồn",
+      "buồi",
+      "cặc",
+      "đéo",
+      "cái l**",
+      "điên",
+      "ngu",
+      "óc chó",
+      "thằng ngu",
+      "đồ ngu",
+      "khùng",
+      "mất dạy",
+      "súc vật",
+    ];
+    const containsBadWords = bannedWords.some((word) =>
+      trimmedComment.toLowerCase().includes(word)
+    );
+    if (containsBadWords) {
+      return toast.error("Bình luận chứa từ ngữ không phù hợp!");
+    }
+
     try {
-      await addComment({ content: newComment, recipe_id: recipeId }, userToken);
+      await addComment(
+        { content: trimmedComment, recipe_id: recipeId },
+        userToken
+      );
       setNewComment("");
       loadComments();
     } catch (error) {

@@ -62,6 +62,51 @@ async function getAllCommentsForAdmin(page = 1, limit = 10) {
   }
 }
 
+async function searchCommentsForAdmin(page = 1, limit = 10, search = "") {
+  try {
+    const offset = (page - 1) * limit;
+
+    const query = `
+      SELECT comment.id, comment.user_id, user.name, user.avatar, 
+             comment.recipe_id, comment.content, comment.created_at 
+      FROM comment 
+      JOIN user ON comment.user_id = user.id
+      WHERE user.name LIKE ? OR comment.content LIKE ?
+      ORDER BY comment.created_at DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const searchPattern = `%${search}%`;
+
+    const [comments] = await db.query(query, [
+      searchPattern,
+      searchPattern,
+      limit,
+      offset,
+    ]);
+
+    const [countResult] = await db.query(
+      `SELECT COUNT(*) AS total FROM comment 
+       JOIN user ON comment.user_id = user.id
+       WHERE user.name LIKE ? OR comment.content LIKE ?`,
+      [searchPattern, searchPattern]
+    );
+    const total = countResult[0].total;
+
+    return {
+      code: 200,
+      data: {
+        comments,
+        total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Thêm bình luận mới
 async function addComment(user_id, comment) {
   try {
@@ -160,6 +205,7 @@ async function deleteCommentById(commentId) {
 module.exports = {
   getCommentsByRecipe,
   getAllCommentsForAdmin,
+  searchCommentsForAdmin,
   addComment,
   deleteComment,
   updateComment,
