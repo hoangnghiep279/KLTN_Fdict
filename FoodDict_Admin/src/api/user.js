@@ -2,20 +2,21 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const API_URL = "http://localhost:3000/api/users";
-const fetchListUser = async () => {
+const fetchListUser = async (page = 1, limit = 10, search = "") => {
   try {
-    const response = await axios.get(API_URL);
-    return response.data.rows;
+    const response = await axios.get(API_URL, {
+      params: { page, limit, search },
+    });
+    return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách dinh dưỡng:", error);
-    toast.error("Không thể tải danh sách dinh dưỡng!");
+    console.error("Lỗi khi lấy danh sách người dùng:", error);
+    toast.error("Không thể tải danh sách người dùng!");
     throw error;
   }
 };
-const banUser = async (userId, days) => {
+const banUser = async (userId, data) => {
   try {
-    const response = await axios.put(`${API_URL}/ban/${userId}`, { days });
-    toast.success(response.data.message);
+    const response = await axios.put(`${API_URL}/ban/${userId}`, data);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi ban người dùng:", error);
@@ -25,13 +26,11 @@ const banUser = async (userId, days) => {
 };
 
 // Bỏ ban người dùng
-const unbanUser = async (userId) => {
+const unbanUser = async (userId, data) => {
   try {
-    const response = await axios.put(`${API_URL}/unban/${userId}`);
-    toast.success(response.data.message);
+    const response = await axios.put(`${API_URL}/unban/${userId}`, data);
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi bỏ ban người dùng:", error);
     toast.error("Không thể bỏ ban người dùng!");
     throw error;
   }

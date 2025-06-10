@@ -11,6 +11,8 @@ function Comment() {
   });
   const [search, setSearch] = useState(""); // state lưu từ khóa tìm kiếm
 
+  console.log(listComment);
+
   // Hàm tải dữ liệu bình luận theo trang và từ khóa search
   const loadComment = async (page = 1, searchValue = "") => {
     try {

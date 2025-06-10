@@ -4,17 +4,17 @@ const controller = require("../controllers/comment");
 const { checkLogin } = require("../middleware/checkLogin");
 
 // lấy danh sách admin
-router.get("/admin", async (req, res, next) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+// router.get("/admin", async (req, res, next) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
 
-    const response = await controller.getAllCommentsForAdmin(page, limit);
-    res.status(response.code).json(response);
-  } catch (error) {
-    next(error);
-  }
-});
+//     const response = await controller.getAllCommentsForAdmin(page, limit);
+//     res.status(response.code).json(response);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // routes/commentRoutes.js
 

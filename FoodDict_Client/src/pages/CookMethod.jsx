@@ -25,7 +25,7 @@ function CookMethod() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Danh mục theo bữa ăn</h1>
+      <h1 className="text-3xl font-bold mb-6">Danh mục theo cách chế biến</h1>
 
       {/* Navbar meal type */}
       <div className="flex flex-wrap gap-4 mb-8">

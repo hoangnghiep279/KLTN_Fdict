@@ -20,7 +20,12 @@ const upload = multer({ storage });
 
 router.get("/", async (req, res, next) => {
   try {
-    res.json(await controller.getListUser());
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+
+    const result = await controller.getListUser(page, limit, search);
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -55,6 +60,8 @@ router.post("/admin-login", async (req, res, next) => {
 
 router.put("/ban/:id", async (req, res, next) => {
   try {
+    console.log(req.body);
+
     const result = await controller.banUser(req.params.id, req.body);
     res.status(result.code).json(result);
   } catch (error) {
@@ -63,7 +70,7 @@ router.put("/ban/:id", async (req, res, next) => {
 });
 router.put("/unban/:id", async (req, res, next) => {
   try {
-    const result = await controller.unbanUser(req.params.id);
+    const result = await controller.unbanUser(req.params.id, req.body);
     res.status(result.code).json(result);
   } catch (error) {
     next(error);

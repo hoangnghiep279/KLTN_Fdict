@@ -150,15 +150,18 @@ async function searchRecipes({
   limit = 20,
 }) {
   try {
+    const offset = (page - 1) * limit;
     const andConditions = [];
     const orConditions = [];
     const values = [];
 
     // Tìm theo từ khóa trong tên nguyên liệu
     if (keyword.trim() !== "") {
-      orConditions.push(`i.name LIKE ?`);
+      orConditions.push(`r.name LIKE ?`);
       values.push(`%${keyword}%`);
     }
+    console.log(orConditions);
+    console.log(values);
 
     // Lọc theo nhu cầu dinh dưỡng
     if (dinh_duong.length > 0) {
@@ -192,7 +195,6 @@ async function searchRecipes({
       values.push(...loai_bua_an);
     }
 
-    // Lọc chính xác danh mục món ăn (category) => dùng AND
     if (danh_muc_mon_an.length > 0) {
       andConditions.push(
         `mc.meal_category_id IN (${danh_muc_mon_an.map(() => "?").join(",")})`
@@ -200,7 +202,6 @@ async function searchRecipes({
       values.push(...danh_muc_mon_an);
     }
 
-    // Kết hợp WHERE
     const whereParts = [];
     if (orConditions.length > 0) {
       whereParts.push(`(${orConditions.join(" OR ")})`);
@@ -208,10 +209,14 @@ async function searchRecipes({
     if (andConditions.length > 0) {
       whereParts.push(`${andConditions.join(" AND ")}`);
     }
+
     const whereClause =
       whereParts.length > 0 ? `WHERE ${whereParts.join(" AND ")}` : "";
 
-    const offset = (page - 1) * limit;
+    // andConditions.push(...orConditions);
+
+    // const whereClause =
+    //   andConditions.length > 0 ? `WHERE ${andConditions.join(" AND ")}` : "";
 
     const countSql = `
       SELECT COUNT(DISTINCT r.id) as total

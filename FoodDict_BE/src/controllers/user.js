@@ -11,19 +11,53 @@ const {
 } = require("../helpers/bcriptPassword.js");
 const uploadSingleImage = require("../helpers/uploadimg").uploadSingleImage;
 
-async function getListUser() {
+async function getListUser(page = 1, limit = 10, search = "") {
   try {
-    const [rows] = await db.query(`SELECT
-      id,
+    const offset = (page - 1) * limit;
+    const searchQuery = `%${search}%`;
+
+    let query = `
+      SELECT
+        id,
         \`name\`,
         \`created_at\`,
         \`gender\`,
         \`banned_until\`
-      FROM
-        \`user\` WHERE permission_id = 2`);
+      FROM \`user\`
+      WHERE permission_id = 2
+    `;
+    const params = [];
+
+    if (search) {
+      query += ` AND \`name\` LIKE ? `;
+      params.push(searchQuery);
+    }
+
+    query += ` ORDER BY \`created_at\` DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+
+    const [rows] = await db.execute(query, params);
+
+    // Lấy tổng số bản ghi
+    const countQuery = search
+      ? `SELECT COUNT(*) AS total FROM \`user\` WHERE permission_id = 2 AND \`name\` LIKE ?`
+      : `SELECT COUNT(*) AS total FROM \`user\` WHERE permission_id = 2`;
+
+    const [countResult] = await db.execute(
+      countQuery,
+      search ? [searchQuery] : []
+    );
+
+    const total = countResult[0].total;
+
     return {
       code: 200,
-      rows,
+      data: rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalUsers: total,
+      },
     };
   } catch (error) {
     throw error;
@@ -315,6 +349,21 @@ async function banUser(userId, user) {
   }
 
   try {
+    // Lấy thông tin người dùng từ DB để lấy tên
+    const [users] = await db.query(
+      `SELECT name FROM \`user\` WHERE id = ? AND permission_id = 2`,
+      [userId]
+    );
+
+    if (users.length === 0) {
+      return {
+        code: 404,
+        message: "Không tìm thấy người dùng hoặc không thể ban admin.",
+      };
+    }
+
+    const userName = users[0].name;
+
     const [result] = await db.query(
       `UPDATE \`user\`
       SET banned_until = DATE_ADD(NOW(), INTERVAL ? DAY)
@@ -322,26 +371,21 @@ async function banUser(userId, user) {
       [user.days, userId]
     );
 
-    if (result.affectedRows === 0) {
-      return {
-        code: 404,
-        message: "Không tìm thấy người dùng hoặc không thể ban admin.",
-      };
-    }
-
     return {
       code: 200,
-      message: `Đã ban người dùng ID ${userId} trong ${user.days} ngày.`,
+      message: `Đã ban người dùng ${userName} trong ${user.days} ngày.`,
+      name: userName,
     };
   } catch (error) {
     throw error;
   }
 }
-async function unbanUser(userId) {
-  if (!userId) {
+
+async function unbanUser(userId, user) {
+  if (!userId || !user.name) {
     return {
       code: 400,
-      message: "Thiếu userId.",
+      message: "Thiếu userId hoặc tên người dùng.",
     };
   }
 
@@ -360,7 +404,7 @@ async function unbanUser(userId) {
 
     return {
       code: 200,
-      message: `Đã bỏ ban người dùng ID ${userId}.`,
+      message: `Đã bỏ ban người dùng ${user.name}.`,
     };
   } catch (error) {
     throw error;

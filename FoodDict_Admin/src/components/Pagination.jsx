@@ -37,7 +37,7 @@ const Pagination = ({ page, totalPages, setPage, limit, setLimit }) => {
         value={limit}
         onChange={handleLimitChange}
       >
-        {[5, 10, 12, 20, 50].map((val) => (
+        {[2, 5, 10, 12, 20, 50].map((val) => (
           <option key={val} value={val}>
             {val} / trang
           </option>

@@ -19,59 +19,66 @@ async function getCommentsByRecipe(recipeId) {
   }
 }
 
-async function getAllCommentsForAdmin(page = 1, limit = 10) {
-  try {
-    const offset = (page - 1) * limit;
+// async function getAllCommentsForAdmin(page = 1, limit = 10) {
+//   try {
+//     const offset = (page - 1) * limit;
 
-    const [comments] = await db.query(
-      `SELECT 
-         comment.id, 
-         comment.user_id, 
-         user.name AS user_name, 
-         user.avatar, 
-         comment.recipe_id, 
-         recipes.name AS recipe_name,
-         comment.content, 
-         comment.created_at 
-       FROM comment 
-       JOIN user ON comment.user_id = user.id 
-       JOIN recipes ON comment.recipe_id = recipes.id
-       ORDER BY comment.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [limit, offset]
-    );
+//     const [comments] = await db.query(
+//       `SELECT
+//          comment.id,
+//          comment.user_id,
+//          user.name AS user_name,
+//          user.avatar,
+//          comment.recipe_id,
+//          recipes.name AS recipe_name,
+//          comment.content,
+//          comment.created_at
+//        FROM comment
+//        JOIN user ON comment.user_id = user.id
+//        JOIN recipes ON comment.recipe_id = recipes.id
+//        ORDER BY comment.created_at DESC
+//        LIMIT ? OFFSET ?`,
+//       [limit, offset]
+//     );
 
-    // Lấy tổng số bình luận (cho frontend biết có bao nhiêu trang)
-    const [totalResult] = await db.query(
-      `SELECT COUNT(*) AS total FROM comment`
-    );
-    const total = totalResult[0].total;
+//     // Lấy tổng số bình luận (cho frontend biết có bao nhiêu trang)
+//     const [totalResult] = await db.query(
+//       `SELECT COUNT(*) AS total FROM comment`
+//     );
+//     const total = totalResult[0].total;
 
-    return {
-      code: 200,
-      data: comments,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    throw error;
-  }
-}
-
+//     return {
+//       code: 200,
+//       data: comments,
+//       pagination: {
+//         page,
+//         limit,
+//         total,
+//         totalPages: Math.ceil(total / limit),
+//       },
+//     };
+//   } catch (error) {
+//     throw error;
+//   }
+// }
 async function searchCommentsForAdmin(page = 1, limit = 10, search = "") {
   try {
     const offset = (page - 1) * limit;
 
     const query = `
-      SELECT comment.id, comment.user_id, user.name, user.avatar, 
-             comment.recipe_id, comment.content, comment.created_at 
+      SELECT 
+        comment.id, 
+        comment.user_id, 
+        user.name AS user_name, 
+        user.avatar, 
+        comment.recipe_id, 
+        recipes.name AS recipe_name,
+        comment.content, 
+        comment.created_at 
       FROM comment 
       JOIN user ON comment.user_id = user.id
-      WHERE user.name LIKE ? OR comment.content LIKE ?
+      JOIN recipes ON comment.recipe_id = recipes.id
+      WHERE user.name LIKE ? OR comment.content LIKE ? OR recipes.name LIKE ?
       ORDER BY comment.created_at DESC
       LIMIT ? OFFSET ?
     `;
@@ -81,16 +88,22 @@ async function searchCommentsForAdmin(page = 1, limit = 10, search = "") {
     const [comments] = await db.query(query, [
       searchPattern,
       searchPattern,
+      searchPattern,
       limit,
       offset,
     ]);
 
     const [countResult] = await db.query(
-      `SELECT COUNT(*) AS total FROM comment 
-       JOIN user ON comment.user_id = user.id
-       WHERE user.name LIKE ? OR comment.content LIKE ?`,
-      [searchPattern, searchPattern]
+      `
+      SELECT COUNT(*) AS total 
+      FROM comment 
+      JOIN user ON comment.user_id = user.id
+      JOIN recipes ON comment.recipe_id = recipes.id
+      WHERE user.name LIKE ? OR comment.content LIKE ? OR recipes.name LIKE ?
+      `,
+      [searchPattern, searchPattern, searchPattern]
     );
+
     const total = countResult[0].total;
 
     return {
@@ -204,7 +217,7 @@ async function deleteCommentById(commentId) {
 
 module.exports = {
   getCommentsByRecipe,
-  getAllCommentsForAdmin,
+  // getAllCommentsForAdmin,
   searchCommentsForAdmin,
   addComment,
   deleteComment,

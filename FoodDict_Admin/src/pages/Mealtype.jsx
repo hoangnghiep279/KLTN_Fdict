@@ -68,10 +68,10 @@ function MealType() {
     }
   };
 
-  // Thêm dinh dưỡng mới
+  // Thêm loại món ăn mới
   const handleAddMealType = async () => {
     if (!newMealTypeName.trim()) {
-      toast.warning("Vui lòng nhập tên dinh dưỡng");
+      toast.warning("Vui lòng nhập tên loại món ăn");
       return;
     }
 
@@ -95,7 +95,7 @@ function MealType() {
 
   return (
     <div className="bg-[#F9FAFF] h-screen p-6">
-      <h3 className="text-3xl font-bold mb-4">Danh sách dinh dưỡng</h3>
+      <h3 className="text-3xl font-bold mb-4">Danh sách loại món ăn</h3>
 
       {/* Nút thêm */}
       <div className="mb-4">
@@ -104,7 +104,7 @@ function MealType() {
             onClick={() => setAddingMode(true)}
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
-            + Thêm dinh dưỡng
+            + Thêm loại món ăn
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ function MealType() {
               value={newMealTypeName}
               onChange={(e) => setNewMealTypeName(e.target.value)}
               className="border border-gray-300 p-2 rounded w-64"
-              placeholder="Nhập tên dinh dưỡng"
+              placeholder="Nhập tên loại món ăn"
             />
             <button
               onClick={handleAddMealType}
@@ -140,7 +140,7 @@ function MealType() {
           <table className="w-[85%] border-collapse">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2 text-left w-2/6">Tên dinh dưỡng</th>
+                <th className="px-4 py-2 text-left w-2/6">Tên loại món ăn</th>
                 <th className="px-4 py-2 w-1/6">Sửa</th>
                 <th className="px-4 py-2 w-1/6">Xóa</th>
               </tr>
@@ -206,7 +206,7 @@ function MealType() {
 
       {/* Nếu danh sách rỗng */}
       {!addingMode && mealType.length === 0 && (
-        <p>Chưa có loại dinh dưỡng nào</p>
+        <p>Chưa có loại loại món ăn nào</p>
       )}
     </div>
   );

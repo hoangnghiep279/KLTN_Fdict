@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { logo } from "../assets/img";
 import AuthModal from "../components/AuthModal";
 import { FaFileSignature } from "react-icons/fa";
@@ -14,6 +14,13 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const location = useLocation();
+  const isMenuCategoryActive = [
+    "/cookmethod",
+    "/mealofday",
+    "/mealtype",
+    "/nutrition",
+  ].some((path) => location.pathname.startsWith(path));
   useEffect(() => {
     const token = localStorage.getItem("token");
     // setIsAuthenticated(!!token);
@@ -42,9 +49,13 @@ function Header() {
           </NavLink>
         </li>
         <li className="relative group">
-          <NavLink className="font-bold text-nowrap flex items-center cursor-pointer">
+          <div
+            className={`font-bold text-nowrap flex items-center cursor-pointer ${
+              isMenuCategoryActive ? "text-primaryColor" : ""
+            }`}
+          >
             Danh mục thực đơn <IoIosArrowDown className="ml-1" />
-          </NavLink>
+          </div>
           <ul className="absolute hidden group-hover:block top-full left-5 bg-white shadow-md rounded-md z-10 min-w-[200px] py-2">
             <li>
               <NavLink
@@ -94,12 +105,22 @@ function Header() {
           </Link>
         </li>
         <li>
-          <NavLink to={"/user-recipe-plan"} className={`font-bold text-nowrap`}>
+          <NavLink
+            to={"/user-recipe-plan"}
+            className={({ isActive }) =>
+              `font-bold text-nowrap ${isActive ? "text-primaryColor" : ""}`
+            }
+          >
             Kế hoạch nấu ăn
           </NavLink>
         </li>
         <li>
-          <NavLink to={"/favorite"} className={`font-bold text-nowrap`}>
+          <NavLink
+            to={"/favorite"}
+            className={({ isActive }) =>
+              `font-bold text-nowrap ${isActive ? "text-primaryColor" : ""}`
+            }
+          >
             Món yêu thích
           </NavLink>
         </li>

@@ -68,10 +68,10 @@ function CookMethod() {
     }
   };
 
-  // Thêm dinh dưỡng mới
+  // Thêm cách nấu mới
   const handleAddCookMethod = async () => {
     if (!newCookMethodName.trim()) {
-      toast.warning("Vui lòng nhập tên dinh dưỡng");
+      toast.warning("Vui lòng nhập tên cách nấu");
       return;
     }
 
@@ -95,7 +95,7 @@ function CookMethod() {
 
   return (
     <div className="bg-[#F9FAFF] h-screen p-6">
-      <h3 className="text-3xl font-bold mb-4">Danh sách dinh dưỡng</h3>
+      <h3 className="text-3xl font-bold mb-4">Danh sách cách nấu</h3>
 
       {/* Nút thêm */}
       <div className="mb-4">
@@ -104,7 +104,7 @@ function CookMethod() {
             onClick={() => setAddingMode(true)}
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
-            + Thêm dinh dưỡng
+            + Thêm cách nấu
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ function CookMethod() {
               value={newCookMethodName}
               onChange={(e) => setNewCookMethodName(e.target.value)}
               className="border border-gray-300 p-2 rounded w-64"
-              placeholder="Nhập tên dinh dưỡng"
+              placeholder="Nhập tên cách nấu"
             />
             <button
               onClick={handleAddCookMethod}
@@ -140,7 +140,7 @@ function CookMethod() {
           <table className="w-[85%] border-collapse">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2 text-left w-2/6">Tên dinh dưỡng</th>
+                <th className="px-4 py-2 text-left w-2/6">Tên cách nấu</th>
                 <th className="px-4 py-2 w-1/6">Sửa</th>
                 <th className="px-4 py-2 w-1/6">Xóa</th>
               </tr>
@@ -206,7 +206,7 @@ function CookMethod() {
 
       {/* Nếu danh sách rỗng */}
       {!addingMode && cookMethod.length === 0 && (
-        <p>Chưa có loại dinh dưỡng nào</p>
+        <p>Chưa có loại cách nấu nào</p>
       )}
     </div>
   );

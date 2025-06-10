@@ -120,7 +120,7 @@ const FilterPanel = ({ onFilterChange }) => {
               const uniqueCategories = Array.from(
                 new Set(displayItems.map((item) => item.category))
               );
-
+              console.log(uniqueCategories);
               return (
                 <div key={groupName} className="mb-4">
                   <p className="font-medium">{capitalize(groupName)}</p>
@@ -134,7 +134,9 @@ const FilterPanel = ({ onFilterChange }) => {
                           )}
                           onChange={() => handleChange("nguyen_lieu", category)}
                         />
-                        <span>{category}</span>
+                        <span className="first-letter:uppercase">
+                          {category}
+                        </span>
                       </label>
                     ))}
                   </div>
