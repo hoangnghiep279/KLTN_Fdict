@@ -2,47 +2,6 @@ const db = require("../config/database");
 const fs = require("fs");
 const path = require("path");
 
-// async function getRecipe(page = 1, limit = 10) {
-//   try {
-//     const offset = (page - 1) * limit;
-
-//     const [rows] = await db.execute(
-//       `
-//       SELECT
-//         r.id,
-//         r.name,
-//         r.img_url,
-//         r.serving_size,
-//         r.cooking_time,
-//         r.difficulty,
-//         COUNT(f.recipe_id) AS favorite_count
-//       FROM recipes r
-//       LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
-//       GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time,
-//                r.difficulty
-//       ORDER BY favorite_count DESC
-//       LIMIT ? OFFSET ?
-//     `,
-//       [limit, offset]
-//     );
-
-//     const [[{ total }]] = await db.execute(`
-//       SELECT COUNT(*) AS total FROM recipes
-//     `);
-
-//     return {
-//       code: 200,
-//       data: rows,
-//       pagination: {
-//         currentPage: page, // trang hiện tại
-//         totalPages: Math.ceil(total / limit), // tổng trang
-//         totalRecipes: total, //tổng món ăn
-//       },
-//     };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
 async function getRecipe(page = 1, limit = 10, search = "") {
   try {
     const offset = (page - 1) * limit;
@@ -54,11 +13,13 @@ async function getRecipe(page = 1, limit = 10, search = "") {
         COUNT(f.recipe_id) AS favorite_count
       FROM recipes r
       LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
+      WHERE r.status = 1
     `;
+
     const params = [];
 
     if (search) {
-      query += ` WHERE r.name LIKE ? `;
+      query += ` AND r.name LIKE ?`;
       params.push(searchQuery);
     }
 
@@ -74,12 +35,68 @@ async function getRecipe(page = 1, limit = 10, search = "") {
 
     // Tổng số kết quả (có áp dụng tìm kiếm nếu có)
     const countQuery = search
-      ? `SELECT COUNT(*) AS total FROM recipes WHERE name LIKE ?`
-      : `SELECT COUNT(*) AS total FROM recipes`;
+      ? `SELECT COUNT(*) AS total FROM recipes WHERE status = 1 AND name LIKE ?`
+      : `SELECT COUNT(*) AS total FROM recipes WHERE status = 1`;
     const [countResult] = await db.execute(
       countQuery,
       search ? [searchQuery] : []
     );
+    const total = countResult[0].total;
+
+    return {
+      code: 200,
+      data: rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalRecipes: total,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+async function getRecipeforUser(userId, page = 1, limit = 10, search = "") {
+  try {
+    const offset = (page - 1) * limit;
+    const searchQuery = `%${search}%`;
+
+    let query = `
+      SELECT 
+        r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, r.status,
+        COUNT(f.recipe_id) AS favorite_count
+      FROM recipes r
+      LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
+      WHERE r.user_id = ?
+    `;
+
+    const params = [userId];
+
+    if (search) {
+      query += ` AND r.name LIKE ?`;
+      params.push(searchQuery);
+    }
+
+    query += `
+      GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, r.status
+      ORDER BY favorite_count DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    params.push(limit, offset);
+
+    const [rows] = await db.execute(query, params);
+
+    // Tổng số kết quả cho user (không lọc status)
+    const countQuery = search
+      ? `SELECT COUNT(*) AS total FROM recipes WHERE user_id = ? AND name LIKE ?`
+      : `SELECT COUNT(*) AS total FROM recipes WHERE user_id = ?`;
+
+    const [countResult] = await db.execute(
+      countQuery,
+      search ? [userId, searchQuery] : [userId]
+    );
+
     const total = countResult[0].total;
 
     return {
@@ -114,6 +131,7 @@ async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
       FROM recipes r
       LEFT JOIN favorite_recipes fr ON r.id = fr.recipe_id
       LEFT JOIN favorite_recipes ufr ON r.id = ufr.recipe_id AND ufr.user_id = ?
+      WHERE r.status = 1
       GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, ufr.user_id
       ORDER BY favorite_count DESC
       LIMIT ? OFFSET ?
@@ -122,7 +140,7 @@ async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
     );
 
     const [[{ total }]] = await db.execute(`
-      SELECT COUNT(*) AS total FROM recipes
+      SELECT COUNT(*) AS total FROM recipes WHERE status = 1
     `);
 
     return {
@@ -151,7 +169,7 @@ async function searchRecipes({
 }) {
   try {
     const offset = (page - 1) * limit;
-    const andConditions = [];
+    const andConditions = [`r.status = 1`];
     const orConditions = [];
     const values = [];
 
@@ -254,113 +272,6 @@ async function searchRecipes({
     throw error;
   }
 }
-
-// async function searchRecipes({
-//   keyword = "",
-//   dinh_duong = [],
-//   nguyen_lieu = [],
-//   cach_nau = [],
-//   loai_bua_an = [],
-//   danh_muc_mon_an = [],
-//   page = 1,
-//   limit = 20,
-// }) {
-//   try {
-//     const andConditions = [];
-//     const orConditions = [];
-//     const values = [];
-
-//     // Tìm theo từ khóa trong tên nguyên liệu
-//     if (keyword.trim() !== "") {
-//       orConditions.push(`i.name LIKE ?`);
-//       values.push(`%${keyword}%`);
-//     }
-
-//     if (dinh_duong.length > 0) {
-//       orConditions.push(
-//         `rn.nutrition_needs_id IN (${dinh_duong.map(() => "?").join(",")})`
-//       );
-//       values.push(...dinh_duong);
-//     }
-
-//     if (nguyen_lieu.length > 0) {
-//       orConditions.push(
-//         `ri.ingredient_id IN (${nguyen_lieu.map(() => "?").join(",")})`
-//       );
-//       values.push(...nguyen_lieu);
-//     }
-
-//     if (cach_nau.length > 0) {
-//       orConditions.push(
-//         `rc.cooking_method_id IN (${cach_nau.map(() => "?").join(",")})`
-//       );
-//       values.push(...cach_nau);
-//     }
-
-//     if (loai_bua_an.length > 0) {
-//       orConditions.push(
-//         `mt.mealtype_id IN (${loai_bua_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...loai_bua_an);
-//     }
-
-//     // Lọc chính xác danh mục món ăn (category) => dùng AND
-//     if (danh_muc_mon_an.length > 0) {
-//       andConditions.push(
-//         `mc.meal_category_id IN (${danh_muc_mon_an.map(() => "?").join(",")})`
-//       );
-//       values.push(...danh_muc_mon_an);
-//     }
-
-//     // Kết hợp WHERE
-//     const whereParts = [];
-//     if (orConditions.length > 0) {
-//       whereParts.push(`(${orConditions.join(" OR ")})`);
-//     }
-//     if (andConditions.length > 0) {
-//       whereParts.push(`${andConditions.join(" AND ")}`);
-//     }
-//     const whereClause =
-//       whereParts.length > 0 ? `WHERE ${whereParts.join(" AND ")}` : "";
-
-//     const offset = (page - 1) * limit;
-
-//     const countSql = `
-//       SELECT COUNT(DISTINCT r.id) as total
-//       FROM recipes r
-//       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
-//       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-//       LEFT JOIN ingredients i ON ri.ingredient_id = i.id
-//       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
-//       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
-//       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-//       ${whereClause}
-//     `;
-
-//     const [countResult] = await db.query(countSql, values);
-//     const totalItems = countResult[0].total;
-//     const totalPages = Math.ceil(totalItems / limit);
-
-//     const dataSql = `
-//       SELECT DISTINCT r.*
-//       FROM recipes r
-//       LEFT JOIN recipe_nutrition_needs rn ON r.id = rn.recipe_id
-//       LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-//       LEFT JOIN ingredients i ON ri.ingredient_id = i.id
-//       LEFT JOIN recipe_cooking_methods rc ON r.id = rc.recipe_id
-//       LEFT JOIN recipe_meal_types mt ON r.id = mt.recipe_id
-//       LEFT JOIN recipe_meal_categories mc ON r.id = mc.recipe_id
-//       ${whereClause}
-//       LIMIT ? OFFSET ?
-//     `;
-
-//     const [data] = await db.query(dataSql, [...values, limit, offset]);
-
-//     return { code: 200, data, totalPages };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
 
 async function getRecipeById(id) {
   try {
@@ -489,11 +400,16 @@ async function insertRecipe(recipe) {
     }
     // Tạo công thức món ăn
     const [recipeResult] = await connection.query(
-      `INSERT INTO recipes (id, name, img_url, serving_size, cooking_time, difficulty, calories, description, preparation, instructions, usagefood, tips, expert_advice, img_nutrition) 
-      VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO recipes (
+        id, name, img_url, serving_size, cooking_time, difficulty, calories,
+        description, preparation, instructions, usagefood, tips, expert_advice,
+        img_nutrition, status, user_id
+      ) VALUES (
+        uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+      )`,
       [
         recipe.name,
-        recipe.img_url, // Đã có từ router
+        recipe.img_url,
         recipe.serving_size,
         recipe.cooking_time,
         recipe.difficulty,
@@ -504,7 +420,9 @@ async function insertRecipe(recipe) {
         recipe.usagefood,
         recipe.tips,
         recipe.expert_advice,
-        recipe.img_nutrition, // Đã có từ router
+        recipe.img_nutrition,
+        recipe.status, // <-- mới
+        recipe.user_id, // <-- mới
       ]
     );
 
@@ -878,6 +796,76 @@ async function updateRecipe(recipeId, recipe) {
     if (connection) connection.release();
   }
 }
+async function getPendingRecipes(page = 1, limit = 10, search = "") {
+  try {
+    const offset = (page - 1) * limit;
+    const searchQuery = `%${search}%`;
+
+    let query = `
+      SELECT 
+        r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty,
+        r.status, r.user_id, COUNT(f.recipe_id) AS favorite_count
+      FROM recipes r
+      LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
+      WHERE r.status = 0
+    `;
+
+    const params = [];
+
+    if (search) {
+      query += ` AND r.name LIKE ?`;
+      params.push(searchQuery);
+    }
+
+    query += `
+      GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, r.status, r.user_id
+      ORDER BY r.created_at DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    params.push(limit, offset);
+
+    const [rows] = await db.execute(query, params);
+
+    const countQuery = search
+      ? `SELECT COUNT(*) AS total FROM recipes WHERE status = 0 AND name LIKE ?`
+      : `SELECT COUNT(*) AS total FROM recipes WHERE status = 0`;
+    const [countResult] = await db.execute(
+      countQuery,
+      search ? [searchQuery] : []
+    );
+    const total = countResult[0].total;
+
+    return {
+      code: 200,
+      data: rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalRecipes: total,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateRecipeStatus(recipeId, newStatus) {
+  try {
+    const [result] = await db.execute(
+      `UPDATE recipes SET status = ? WHERE id = ?`,
+      [newStatus, recipeId]
+    );
+
+    if (result.affectedRows === 0) {
+      return { code: 404, message: "Không tìm thấy công thức." };
+    }
+
+    return { code: 200, message: "Cập nhật trạng thái thành công." };
+  } catch (err) {
+    throw err;
+  }
+}
 
 async function deleteRecipe(recipeId) {
   let connection;
@@ -958,6 +946,7 @@ async function deleteRecipe(recipeId) {
 
 module.exports = {
   getRecipe,
+  getRecipeforUser,
   getRecipesWithFavoriteStatus,
   searchRecipes,
   getRecipeById,
@@ -965,5 +954,7 @@ module.exports = {
   getRecipeUpdate,
   insertRecipe,
   updateRecipe,
+  getPendingRecipes,
+  updateRecipeStatus,
   deleteRecipe,
 };

@@ -10,6 +10,9 @@ import MealOfDay from "./pages/MealOfDay";
 import MealType from "./pages/MealType";
 import Nutrition from "./pages/Nutrition";
 import MealPlanner from "./pages/MealPlanner";
+import InsertRecipe from "./pages/InsertRecipe";
+import RecipeManager from "./pages/RecipeManager";
+import UpdateRecipe from "./pages/UpdateRecipe";
 
 const App = () => {
   return (
@@ -24,6 +27,12 @@ const App = () => {
         <Route path="/mealtype" element={<MealType />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/user-recipe-plan" element={<MealPlanner />} />
+        <Route path="/recipe-manager" element={<RecipeManager />} />
+        <Route path="/add-recipe" element={<InsertRecipe />} />
+        <Route
+          path="/recipe-manager/updaterecipe/:id"
+          element={<UpdateRecipe />}
+        />
       </Route>
     </Routes>
   );

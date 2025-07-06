@@ -145,6 +145,12 @@ function Header() {
                 </li>
                 <li
                   className="py-2 px-4 hover:bg-gray-200 hover:text-primaryColor rounded-lg cursor-pointer"
+                  onClick={() => navigate("/recipe-manager")}
+                >
+                  Công thức của tôi
+                </li>
+                <li
+                  className="py-2 px-4 hover:bg-gray-200 hover:text-primaryColor rounded-lg cursor-pointer"
                   onClick={handleLogout}
                 >
                   Đăng xuất

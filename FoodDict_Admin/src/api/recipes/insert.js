@@ -1,14 +1,16 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:3000/recipe";
+const API_URL = "http://localhost:3000/recipe/admin";
 
 // API thêm công thức món ăn
 const insertRecipe = async (formData) => {
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.post(API_URL, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
 

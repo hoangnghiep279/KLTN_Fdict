@@ -19,6 +19,7 @@ function Header() {
       links: [
         { name: "Danh sách công thức", to: "/" },
         { name: "Thêm công thức", to: "/admin/insertRecipe" },
+        { name: "Danh sách công thức chờ duyệt", to: "/admin/recipe-pending" },
       ],
     },
     {

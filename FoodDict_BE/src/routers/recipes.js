@@ -5,6 +5,7 @@ const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 const { checkLogin } = require("../middleware/checkLogin");
+const { checkAdmin, checkUser } = require("../middleware/checkPermission");
 const uploadDir = path.join(__dirname, "../resources/img-recipes");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -22,7 +23,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-// lấy tất cả công thức có trong db
+// lấy tất cả công thức với trạng thái 1
 router.get("/", async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -30,6 +31,25 @@ router.get("/", async (req, res, next) => {
     const search = req.query.search || "";
 
     const result = await controller.getRecipe(page, limit, search);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+// lấy công thức người dùng đóng góp
+router.get("/user-recipe", checkLogin, async (req, res, next) => {
+  try {
+    const userId = req.payload.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+
+    const result = await controller.getRecipeforUser(
+      userId,
+      page,
+      limit,
+      search
+    );
     res.json(result);
   } catch (error) {
     next(error);
@@ -94,19 +114,17 @@ router.get("/get-update/:id", async (req, res, next) => {
   }
 });
 
-// thêm công thức
+//thêm công thức bên admin
 router.post(
-  "/",
+  "/admin",
+  checkLogin,
+  checkAdmin,
   upload.fields([
     { name: "img_url", maxCount: 1 },
     { name: "img_nutrition", maxCount: 1 },
   ]),
   async (req, res, next) => {
     try {
-      if (!req.body || Object.keys(req.body).length === 0) {
-        return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
-      }
-
       const img_url = req.files["img_url"]
         ? `resources/img-recipes/${req.files["img_url"][0].filename}`
         : null;
@@ -114,9 +132,49 @@ router.post(
         ? `resources/img-recipes/${req.files["img_nutrition"][0].filename}`
         : null;
 
-      res.json(
-        await controller.insertRecipe({ ...req.body, img_url, img_nutrition })
-      );
+      const recipeData = {
+        ...req.body,
+        img_url,
+        img_nutrition,
+        status: 1,
+        user_id: req.payload.id,
+      };
+      console.log(recipeData);
+
+      res.json(await controller.insertRecipe(recipeData));
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// thêm công thức người dùng
+router.post(
+  "/user",
+  checkLogin,
+  checkUser,
+  upload.fields([
+    { name: "img_url", maxCount: 1 },
+    { name: "img_nutrition", maxCount: 1 },
+  ]),
+  async (req, res, next) => {
+    try {
+      const img_url = req.files["img_url"]
+        ? `resources/img-recipes/${req.files["img_url"][0].filename}`
+        : null;
+      const img_nutrition = req.files["img_nutrition"]
+        ? `resources/img-recipes/${req.files["img_nutrition"][0].filename}`
+        : null;
+
+      const recipeData = {
+        ...req.body,
+        img_url,
+        img_nutrition,
+        status: 0,
+        user_id: req.payload.id,
+      };
+
+      res.json(await controller.insertRecipe(recipeData));
     } catch (error) {
       next(error);
     }
@@ -151,6 +209,46 @@ router.put(
 
       const result = await controller.updateRecipe(recipeId, updatedRecipe);
       res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+// lấy danh sách công thức chờ duyệt
+router.get(
+  "/admin/pending-recipes",
+  checkLogin,
+  checkAdmin,
+  async (req, res, next) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const search = req.query.search || "";
+
+      const result = await controller.getPendingRecipes(page, limit, search);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// duyệt hoặc từ chối
+router.patch(
+  "/admin/update-status/:id",
+  checkLogin,
+  checkAdmin,
+  async (req, res, next) => {
+    try {
+      const recipeId = req.params.id;
+      const { status } = req.body;
+
+      if (![1, 2].includes(status)) {
+        return res.status(400).json({ message: "Trạng thái không hợp lệ." });
+      }
+
+      const result = await controller.updateRecipeStatus(recipeId, status);
+      res.status(result.code).json(result);
     } catch (error) {
       next(error);
     }

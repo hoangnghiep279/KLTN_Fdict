@@ -11,6 +11,8 @@ import MealType from "./pages/Mealtype";
 import ListUser from "./pages/ListUser";
 import Login from "./pages/Login";
 import Comment from "./pages/Comment";
+import ListRecipePending from "./pages/ListRecipePending";
+import ListUserr from "./pages/ListUserr";
 
 const App = () => {
   return (
@@ -22,6 +24,11 @@ const App = () => {
         <Route path="/admin/recipedetail/:id" element={<RecipeDetail />} />
 
         <Route path="/admin/insertRecipe" element={<InsertRecipe />} />
+        <Route path="/admin/recipe-pending" element={<ListRecipePending />} />
+        <Route
+          path="/admin/recipe-pending/recipedetail/:id"
+          element={<RecipeDetail />}
+        />
         <Route path="/admin/nutritionNeeds" element={<Nutrition />} />
         <Route path="/admin/cookingMethods" element={<CookMethod />} />
         <Route path="/admin/user-management" element={<ListUser />} />

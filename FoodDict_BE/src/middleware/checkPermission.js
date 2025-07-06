@@ -37,7 +37,7 @@ const checkAdmin = async (req, res, next) => {
     next(error);
   }
 };
-const checkAdministrator = async (req, res, next) => {
+const checkUser = async (req, res, next) => {
   try {
     const [result] = await db.execute(
       `SELECT permission_id
@@ -52,7 +52,7 @@ const checkAdministrator = async (req, res, next) => {
     }
     if (result[0].permission_id !== 2) {
       const err = new Error("Bạn không có quyền thực hiện thao tác này!");
-      err.statusCode = 403; // Forbidden
+      err.statusCode = 403;
       return next(err);
     }
     next();
@@ -61,29 +61,8 @@ const checkAdministrator = async (req, res, next) => {
   }
 };
 
-const checkDeleteUser = async (req, res, next) => {
-  try {
-    const [result] = await db.execute(
-      `SELECT permission_id
-            FROM \`user\`
-            WHERE \`id\` = '${req.payload.id}'`
-    );
-
-    if (req.payload.id == req.params.id || result.permission_id === 1) {
-      next();
-      return;
-    }
-    err = new Error("Bạn không thể xoá user này!");
-    err.statusCode = 401;
-    next(err);
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   checkMyAccount,
   checkAdmin,
-  checkAdministrator,
-  checkDeleteUser,
+  checkUser,
 };
