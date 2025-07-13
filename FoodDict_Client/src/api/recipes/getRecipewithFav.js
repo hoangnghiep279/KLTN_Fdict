@@ -6,11 +6,14 @@ const fetchRecipesWithFavoriteStatus = async (
   setLoading,
   page,
   limit,
-  token
+  token,
+  sortType = "all" // thêm tham số sortType với mặc định là 'all'
 ) => {
   try {
+    setLoading(true);
+
     const response = await axios.get(
-      `http://localhost:3000/recipe/recipefav?page=${page}&limit=${limit}`,
+      `http://localhost:3000/recipe/recipefav?page=${page}&limit=${limit}&sortType=${sortType}`, // thêm sortType vào URL
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -26,6 +29,7 @@ const fetchRecipesWithFavoriteStatus = async (
     setLoading(false);
   }
 };
+
 const fetchRecipesforSlider = async (setRecipes, setLoading, token) => {
   try {
     const response = await axios.get(`http://localhost:3000/recipe/recipefav`, {

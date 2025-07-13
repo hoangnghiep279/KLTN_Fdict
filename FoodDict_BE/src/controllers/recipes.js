@@ -2,14 +2,15 @@ const db = require("../config/database");
 const fs = require("fs");
 const path = require("path");
 
-async function getRecipe(page = 1, limit = 10, search = "") {
+async function getRecipe(page = 1, limit = 10, search = "", sortType = "all") {
   try {
     const offset = (page - 1) * limit;
     const searchQuery = `%${search}%`;
 
     let query = `
       SELECT 
-        r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty,
+        r.id, r.name, r.img_url, r.serving_size, r.cooking_time, 
+        r.difficulty, r.view_count, r.created_at,
         COUNT(f.recipe_id) AS favorite_count
       FROM recipes r
       LEFT JOIN favorite_recipes f ON r.id = f.recipe_id
@@ -24,16 +25,31 @@ async function getRecipe(page = 1, limit = 10, search = "") {
     }
 
     query += `
-      GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty
-      ORDER BY favorite_count DESC
-      LIMIT ? OFFSET ?
+      GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, 
+               r.difficulty, r.view_count, r.created_at
     `;
 
+    // Sắp xếp theo loại được chọn
+    switch (sortType) {
+      case "favorite":
+        query += ` ORDER BY favorite_count DESC`;
+        break;
+      case "popular":
+        query += ` ORDER BY r.view_count DESC`;
+        break;
+      case "newest":
+        query += ` ORDER BY r.created_at DESC`;
+        break;
+      default:
+        query += ` ORDER BY r.id DESC`; // mặc định tất cả
+    }
+
+    query += ` LIMIT ? OFFSET ?`;
     params.push(limit, offset);
 
     const [rows] = await db.execute(query, params);
 
-    // Tổng số kết quả (có áp dụng tìm kiếm nếu có)
+    // Đếm tổng số bản ghi
     const countQuery = search
       ? `SELECT COUNT(*) AS total FROM recipes WHERE status = 1 AND name LIKE ?`
       : `SELECT COUNT(*) AS total FROM recipes WHERE status = 1`;
@@ -56,7 +72,8 @@ async function getRecipe(page = 1, limit = 10, search = "") {
     throw error;
   }
 }
-async function getRecipeforUser(userId, page = 1, limit = 10, search = "") {
+
+async function getRecipeOfUser(userId, page = 1, limit = 10, search = "") {
   try {
     const offset = (page - 1) * limit;
     const searchQuery = `%${search}%`;
@@ -113,9 +130,24 @@ async function getRecipeforUser(userId, page = 1, limit = 10, search = "") {
   }
 }
 
-async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
+async function getRecipesWithFavoriteStatus(
+  userId,
+  page = 1,
+  limit = 10,
+  sortType = "all"
+) {
   try {
     const offset = (page - 1) * limit;
+
+    let orderByClause = "ORDER BY favorite_count DESC"; // mặc định là theo lượt yêu thích
+
+    if (sortType === "popular") {
+      orderByClause = "ORDER BY r.view_count DESC";
+    } else if (sortType === "newest") {
+      orderByClause = "ORDER BY r.created_at DESC";
+    } else if (sortType === "all") {
+      orderByClause = "ORDER BY r.id DESC"; // hoặc giữ nguyên theo ID
+    }
 
     const [rows] = await db.execute(
       `
@@ -133,7 +165,7 @@ async function getRecipesWithFavoriteStatus(userId, page = 1, limit = 10) {
       LEFT JOIN favorite_recipes ufr ON r.id = ufr.recipe_id AND ufr.user_id = ?
       WHERE r.status = 1
       GROUP BY r.id, r.name, r.img_url, r.serving_size, r.cooking_time, r.difficulty, ufr.user_id
-      ORDER BY favorite_count DESC
+      ${orderByClause}
       LIMIT ? OFFSET ?
     `,
       [userId, limit, offset]
@@ -281,6 +313,10 @@ async function getRecipeById(id) {
       error.statusCode = 400;
       throw error;
     }
+    await db.query(
+      `UPDATE recipes SET view_count = view_count + 1 WHERE id = ?`,
+      [id]
+    );
 
     // Truy vấn thông tin món ăn
     const [recipe] = await db.query(
@@ -311,7 +347,7 @@ async function getRecipeById(id) {
       ingredients,
     };
   } catch (error) {
-    throw error; // Để router xử lý lỗi
+    throw error;
   }
 }
 
@@ -322,6 +358,10 @@ async function getRecipeByIdForUser(id, userId) {
       error.statusCode = 400;
       throw error;
     }
+    await db.query(
+      `UPDATE recipes SET view_count = view_count + 1 WHERE id = ?`,
+      [id]
+    );
 
     // Lấy thông tin món ăn
     const [recipe] = await db.query(
@@ -946,7 +986,7 @@ async function deleteRecipe(recipeId) {
 
 module.exports = {
   getRecipe,
-  getRecipeforUser,
+  getRecipeOfUser,
   getRecipesWithFavoriteStatus,
   searchRecipes,
   getRecipeById,

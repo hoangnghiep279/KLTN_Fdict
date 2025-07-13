@@ -15,15 +15,6 @@ const fetchListUser = async (page = 1, limit = 10, search = "") => {
   }
 };
 
-const fetUser = async () => {
-  try {
-    const res = await axios.get("http://localhost:3000/getlistUsser");
-
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
 const banUser = async (userId, data) => {
   try {
     const response = await axios.put(`${API_URL}/ban/${userId}`, data);
@@ -46,4 +37,4 @@ const unbanUser = async (userId, data) => {
   }
 };
 
-export { fetchListUser, banUser, unbanUser, fetUser };
+export { fetchListUser, banUser, unbanUser };

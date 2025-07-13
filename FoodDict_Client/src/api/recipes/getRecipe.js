@@ -5,11 +5,14 @@ const fetchRecipes = async (
   setTotalPages,
   setLoading,
   page,
-  limit
+  limit,
+  sortType = "all" // Thêm mặc định là 'all'
 ) => {
   try {
+    setLoading(true); // Nên set true ở đầu luôn
+
     const response = await axios.get(
-      `http://localhost:3000/recipe?page=${page}&limit=${limit}`
+      `http://localhost:3000/recipe?page=${page}&limit=${limit}&sortType=${sortType}`
     );
 
     setRecipes(response.data.data);
@@ -20,6 +23,7 @@ const fetchRecipes = async (
     setLoading(false);
   }
 };
+
 const fetchRecipesSlider = async (setRecipes, setLoading) => {
   try {
     const response = await axios.get(`http://localhost:3000/recipe`);

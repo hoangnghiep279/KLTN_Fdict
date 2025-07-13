@@ -19,6 +19,7 @@ function Home() {
   const [totalPages, setTotalPages] = useState(1);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [sortType, setSortType] = useState("all");
   const token = localStorage.getItem("token");
   const [selectedFilters, setSelectedFilters] = useState({
     dinh_duong: [],
@@ -61,7 +62,8 @@ function Home() {
               setLoading,
               page,
               limit,
-              token
+              token,
+              sortType
             );
           } else {
             await fetchRecipes(
@@ -69,7 +71,8 @@ function Home() {
               setTotalPages,
               setLoading,
               page,
-              limit
+              limit,
+              sortType
             );
           }
         }
@@ -81,7 +84,7 @@ function Home() {
     };
 
     fetchFilteredRecipes();
-  }, [selectedFilters, page, limit]);
+  }, [selectedFilters, page, limit, sortType]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -151,6 +154,20 @@ function Home() {
           </div>
         )}
         <h2 className="text-4xl font-extrabold text-center">Thực đơn</h2>
+        <select
+          onChange={(e) => {
+            setSortType(e.target.value);
+            setPage(1);
+          }}
+          value={sortType}
+          className="mt-4 border-2 px-3 py-2 rounded-md ml-auto block "
+        >
+          <option value="all">Tất cả</option>
+          <option value="favorite">Yêu thích nhiều nhất</option>
+          <option value="popular">Phổ biến</option>
+          <option value="newest">Mới nhất</option>
+        </select>
+
         <div className="mt-10 flex items-center gap-8 flex-wrap">
           {recipes.length > 0 ? (
             recipes.map((recipe) => <Food key={recipe.id} recipe={recipe} />)

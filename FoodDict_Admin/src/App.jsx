@@ -12,7 +12,6 @@ import ListUser from "./pages/ListUser";
 import Login from "./pages/Login";
 import Comment from "./pages/Comment";
 import ListRecipePending from "./pages/ListRecipePending";
-import ListUserr from "./pages/ListUserr";
 
 const App = () => {
   return (

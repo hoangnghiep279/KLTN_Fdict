@@ -108,13 +108,12 @@ function MealPlanner() {
         serving_size: item.serving_size,
         cooking_time: item.cooking_time,
         difficulty: item.difficulty,
+        view_count: item.view_count,
       }));
       setSuggestedRecipes(formattedResults);
       console.log(formattedResults);
       setIsSearching(true);
-    } catch (error) {
-      // đã xử lý toast trong API
-    }
+    } catch (error) {}
   };
   return (
     <>

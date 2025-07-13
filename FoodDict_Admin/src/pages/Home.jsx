@@ -17,7 +17,8 @@ function Home() {
 
   useEffect(() => {
     fetchRecipes(setRecipes, setTotalPages, setLoading, page, limit, search);
-  }, [page, limit, search]); // <-- thêm search vào dependency
+  }, [page, limit, search]);
+  console.log(recipes);
 
   const handleDelete = (id) => {
     deleteRecipe(id, (deletedId) => {

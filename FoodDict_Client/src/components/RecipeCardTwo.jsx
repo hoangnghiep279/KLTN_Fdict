@@ -5,7 +5,7 @@ import { PiChefHatBold } from "react-icons/pi";
 import { GiRiceCooker } from "react-icons/gi";
 import { MdPeopleOutline } from "react-icons/md";
 import { addMealPlan } from "../api/mealPlanAPI"; // bạn sẽ tạo cái này bên dưới
-
+import { FaEye } from "react-icons/fa";
 function RecipeCardTwo({ recipe, onAddSuccess }) {
   const [showOptions, setShowOptions] = useState(false);
   const [selectedMealTime, setSelectedMealTime] = useState(null);
@@ -92,12 +92,12 @@ function RecipeCardTwo({ recipe, onAddSuccess }) {
           <Link to={`/detailRecipe/${recipe.id}`}>
             <p className="font-bold text-lg mb-3">{recipe.name}</p>
           </Link>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center px-2 py-1 border border-[#ff8a4228] rounded-md text-sm">
+          <div className="grid grid-cols-2 items-center gap-3">
+            <span className="flex items-center px-2 h-30 border border-[#ff8a425b] rounded-md text-sm">
               <MdPeopleOutline className="text-primaryColor mr-2 text-base" />
               {recipe.serving_size}
             </span>
-            <span className="flex items-center px-2 py-1 border border-[#ff8a4228] rounded-md text-sm">
+            <span className="flex items-center px-2 h-30 border border-[#ff8a425b] rounded-md text-sm">
               <PiChefHatBold className="text-primaryColor mr-2 text-base" />
               {recipe.difficulty === 1
                 ? "Dễ"
@@ -105,9 +105,13 @@ function RecipeCardTwo({ recipe, onAddSuccess }) {
                 ? "Vừa"
                 : "Khó"}
             </span>
-            <span className="flex items-center px-2 py-1 border border-[#ff8a4228] rounded-md text-sm">
+            <span className="flex items-center px-2 h-30 border border-[#ff8a425b] rounded-md text-sm">
               <GiRiceCooker className="text-primaryColor mr-2 text-base" />
               {recipe.cooking_time}
+            </span>
+            <span className="flex items-center px-2 h-30 border border-[#ff8a425b] rounded-md text-sm">
+              <FaEye className="text-primaryColor mr-2 text-base" />
+              {recipe.view_count}
             </span>
           </div>
         </div>

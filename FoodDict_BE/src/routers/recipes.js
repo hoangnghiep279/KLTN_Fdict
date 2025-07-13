@@ -23,20 +23,21 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-// lấy tất cả công thức với trạng thái 1
+// lấy tất cả công thức với trạng thái 1 - client
 router.get("/", async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
+    const sortType = req.query.sortType || "all";
 
-    const result = await controller.getRecipe(page, limit, search);
+    const result = await controller.getRecipe(page, limit, search, sortType);
     res.json(result);
   } catch (error) {
     next(error);
   }
 });
-// lấy công thức người dùng đóng góp
+// ds công thức  đóng góp - client
 router.get("/user-recipe", checkLogin, async (req, res, next) => {
   try {
     const userId = req.payload.id;
@@ -44,7 +45,7 @@ router.get("/user-recipe", checkLogin, async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
 
-    const result = await controller.getRecipeforUser(
+    const result = await controller.getRecipeOfUser(
       userId,
       page,
       limit,
@@ -56,17 +57,19 @@ router.get("/user-recipe", checkLogin, async (req, res, next) => {
   }
 });
 
-// lấy tất cả công thức khi đăng nhập
+// lấy tất cả công thức khi đăng nhập -client
 router.get("/recipefav", checkLogin, async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const userId = req.payload.id;
+    const sortType = req.query.sortType || "all";
 
     const result = await controller.getRecipesWithFavoriteStatus(
       userId,
       page,
-      limit
+      limit,
+      sortType
     );
     res.json(result);
   } catch (error) {
@@ -74,7 +77,7 @@ router.get("/recipefav", checkLogin, async (req, res, next) => {
   }
 });
 
-// lọc công thức
+// lọc công thức - client
 router.post("/search", async (req, res, next) => {
   try {
     console.log(req.body);
@@ -85,7 +88,7 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
-// lấy công thức với id
+// lấy công thức với id - client
 router.get("/:id", async (req, res, next) => {
   try {
     res.json(await controller.getRecipeById(req.params.id));
@@ -93,7 +96,7 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
-// lấy công thức với id khi đăng nhập
+// lấy công thức với id khi đăng nhập - client
 router.get("/detail-foruser/:id", checkLogin, async (req, res, next) => {
   try {
     res.json(
@@ -104,7 +107,7 @@ router.get("/detail-foruser/:id", checkLogin, async (req, res, next) => {
   }
 });
 
-// lấy thông tin công thức để update
+// lấy thông tin công thức để update - admin
 router.get("/get-update/:id", async (req, res, next) => {
   try {
     const recipeId = req.params.id;
@@ -181,7 +184,7 @@ router.post(
   }
 );
 
-// sửa công thức
+// sửa công thức - both
 router.put(
   "/:id",
   upload.fields([
@@ -214,7 +217,7 @@ router.put(
     }
   }
 );
-// lấy danh sách công thức chờ duyệt
+// lấy danh sách công thức chờ duyệt - admin
 router.get(
   "/admin/pending-recipes",
   checkLogin,
@@ -233,7 +236,7 @@ router.get(
   }
 );
 
-// duyệt hoặc từ chối
+// duyệt hoặc từ chối - admin
 router.patch(
   "/admin/update-status/:id",
   checkLogin,

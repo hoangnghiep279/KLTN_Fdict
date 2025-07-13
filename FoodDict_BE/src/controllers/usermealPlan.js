@@ -79,7 +79,10 @@ async function deleteMealPlan(userId, mealPlanId) {
 async function searchRecipes(keyword) {
   try {
     const [results] = await db.query(
-      `SELECT id, name, img_url , serving_size, cooking_time, difficulty  FROM recipes WHERE name LIKE ? LIMIT 20`,
+      `SELECT id, name, img_url, serving_size, cooking_time, difficulty, view_count
+       FROM recipes
+       WHERE status = 1 AND name LIKE ?
+       LIMIT 20`,
       [`%${keyword}%`]
     );
     return { code: 200, data: results };
@@ -91,7 +94,11 @@ async function searchRecipes(keyword) {
 async function getSuggestedRecipes() {
   try {
     const [results] = await db.query(
-      `SELECT id, name, img_url, serving_size, cooking_time, difficulty FROM recipes ORDER BY RAND() LIMIT 15`
+      `SELECT id, name, img_url, serving_size, cooking_time, difficulty, view_count
+       FROM recipes
+       WHERE status = 1
+       ORDER BY view_count DESC
+       LIMIT 15`
     );
     return { code: 200, data: results };
   } catch (error) {

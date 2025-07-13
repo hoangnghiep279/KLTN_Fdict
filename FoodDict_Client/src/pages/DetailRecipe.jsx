@@ -43,6 +43,7 @@ function DetailRecipe() {
   }, [id, token]);
   console.log(recipesDetail);
 
+  // gợi ý công thức
   useEffect(() => {
     if (token) {
       fetchRecipesforSlider(setRecipes, setLoading, token);
